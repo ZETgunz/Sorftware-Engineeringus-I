@@ -1,0 +1,41 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\VU\\Semestras3\\PSI\\Team-Melon\\Sorftware-Engineeringus-I\\Melon_Benchmarks\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\Melon_Benchmarks.bundle.scp.css",
+      "PackagePath": "staticwebassets\\Melon_Benchmarks.bundle.scp.css"
+    },
+    {
+      "Id": "C:\\VU\\Semestras3\\PSI\\Team-Melon\\Sorftware-Engineeringus-I\\Melon_Benchmarks\\wwwroot\\app.css",
+      "PackagePath": "staticwebassets\\app.css"
+    },
+    {
+      "Id": "C:\\VU\\Semestras3\\PSI\\Team-Melon\\Sorftware-Engineeringus-I\\Melon_Benchmarks\\wwwroot\\bootstrap\\bootstrap.min.css",
+      "PackagePath": "staticwebassets\\bootstrap\\bootstrap.min.css"
+    },
+    {
+      "Id": "C:\\VU\\Semestras3\\PSI\\Team-Melon\\Sorftware-Engineeringus-I\\Melon_Benchmarks\\wwwroot\\bootstrap\\bootstrap.min.css.map",
+      "PackagePath": "staticwebassets\\bootstrap\\bootstrap.min.css.map"
+    },
+    {
+      "Id": "C:\\VU\\Semestras3\\PSI\\Team-Melon\\Sorftware-Engineeringus-I\\Melon_Benchmarks\\wwwroot\\favicon.png",
+      "PackagePath": "staticwebassets\\favicon.png"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.Melon_Benchmarks.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.Melon_Benchmarks.props",
+      "PackagePath": "build\\Melon_Benchmarks.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.Melon_Benchmarks.props",
+      "PackagePath": "buildMultiTargeting\\Melon_Benchmarks.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.Melon_Benchmarks.props",
+      "PackagePath": "buildTransitive\\Melon_Benchmarks.props"
+    }
+  ],
+  "ElementsToRemove": []
+}
