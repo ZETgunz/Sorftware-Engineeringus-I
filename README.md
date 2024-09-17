@@ -14,7 +14,6 @@
 - Leaderboards
 
 ## Game ideas
-- Speed writing about melons?
-- Fruit ninja
-- Sequence memorization
-
+- Speed typing $\color{lime}{\textsf{Melon}}$ verses
+- $\color{lime}{\textsf{Melon}}$ sequence memory
+- Fruit ninja but Only$\color{lime}{\textsf{Melons}}$
