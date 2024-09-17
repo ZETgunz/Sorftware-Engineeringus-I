@@ -16,4 +16,4 @@
 ## Game ideas
 - Speed typing $\color{lime}{\textsf{Melon}}$ verses
 - $\color{lime}{\textsf{Melon}}$ sequence memory
-- Fruit ninja but Only$\color{lime}{\textsf{Melons}}$
+- Fruit ninja but $\color{lime}{\textsf{OnlyMelons}}$
