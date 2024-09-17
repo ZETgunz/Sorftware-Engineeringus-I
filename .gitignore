@@ -43,6 +43,7 @@ bld/
 # Visual Studio 2017 auto generated files
 Generated\ Files/
 
+Melon_Benchmarks/obj
 # MSTest test Results
 [Tt]est[Rr]esult*/
 [Bb]uild[Ll]og.*
@@ -241,6 +242,7 @@ ClientBin/
 *~
 *.dbmdl
 *.dbproj.schemaview
+*.sln
 *.jfm
 *.pfx
 *.publishsettings
@@ -482,3 +484,5 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+
