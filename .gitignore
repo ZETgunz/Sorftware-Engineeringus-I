@@ -43,6 +43,8 @@ bld/
 # Visual Studio 2017 auto generated files
 Generated\ Files/
 
+Debug/
+Release/
 # MSTest test Results
 [Tt]est[Rr]esult*/
 [Bb]uild[Ll]og.*
@@ -483,3 +485,5 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+
