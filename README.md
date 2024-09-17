@@ -8,5 +8,13 @@
 
 ## What should be implemented
 
-- Login to keep the highscores
+- Profiles
 - Frontend with react 
+- Log in/out
+- Leaderboards
+
+## Game ideas
+- Speed writing about melons?
+- Fruit ninja
+- Sequence memorization
+
