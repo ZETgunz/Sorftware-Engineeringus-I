@@ -1,4 +1,4 @@
-$\color{lime}{\textsf{#Melon Benchmarks}}$
+$\color{lime}{\textsf{Melon Benchmarks}}$
 
 ## How to run
 
