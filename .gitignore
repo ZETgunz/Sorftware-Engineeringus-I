@@ -43,8 +43,7 @@ bld/
 # Visual Studio 2017 auto generated files
 Generated\ Files/
 
-Debug/
-Release/
+Melon_Benchmarks/obj
 # MSTest test Results
 [Tt]est[Rr]esult*/
 [Bb]uild[Ll]og.*
