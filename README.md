@@ -2,8 +2,7 @@
 
 ## How to run
 
-- Pull from the repository the newest commit
-- Change directory to `Melon_Benchmark_API`
+- Download latest release
 - Run `dotnet run` or `dotnet watch` 
 
 ## Functionality
