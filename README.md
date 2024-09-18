@@ -16,5 +16,5 @@
 ### Backend with C#
 - User login
 - User profile
-- Player Leaderboards
+- User leaderboards
 - $\color{lime}{\textsf{Melons}}$
