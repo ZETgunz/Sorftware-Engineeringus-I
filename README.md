@@ -2,8 +2,11 @@
 
 ## How to run
 
-- Download latest release
-- Run `dotnet run` or `dotnet watch` 
+- Navigate to `Melon_Benchmark_API`
+- Run `dotnet run`
+- Navigate to `frontend`
+- Run `npm run dev`
+- Go to your [localhost](http://localhost:5173/)
 
 ## Functionality
 
