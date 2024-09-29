@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Tile } from '../components/tile';
+import { Tile } from '../components/Tile/tile';
 import './Home.css';
 
 interface Game {
@@ -15,7 +15,7 @@ export const Home = () => {
     useEffect(() => {
         const fetchGames = async () => {
             try {
-                const response = await fetch('http://localhost:5071/games');
+                const response = await fetch('http://localhost:5071/api/games');
                 if (!response.ok) {
                     throw new Error(`Error: ${response.statusText}`);
                 }
