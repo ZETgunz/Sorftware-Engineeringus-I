@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers
 {
     [ApiController]
-    [Route("games")]
+    [Route("api/[controller]")]
     public class GamesController : ControllerBase
     {
         private static readonly List<Game> games =
