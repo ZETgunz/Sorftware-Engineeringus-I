@@ -9,10 +9,14 @@ namespace backend.Controllers
     {
         private static readonly Random rand = new Random();
 
-        [HttpGet]
-        public ActionResult<IEnumerable<int>> GetCell()
+        [HttpGet("{level}")]
+        public ActionResult<List<SequenceCell>> GetCell(int level)
         {
-        return Ok(new SequenceCell{ row = rand.Next() % 3, column = rand.Next() % 3 });
+            List<SequenceCell> sequence = new List<SequenceCell>{};
+            while(sequence.Count()!=level){
+                sequence.Add(new SequenceCell {row = rand.Next() % 3, column = rand.Next() % 3 });
+            }
+            return Ok(sequence);
         }
     }
 }

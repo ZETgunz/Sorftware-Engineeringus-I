@@ -32,27 +32,25 @@ export const Grid: React.FC = () => {
             setWrongClick({ row: rowIndex, column: colIndex });
             setClick(0);
             gameOver();
-            cellsToActivate.length = 0;
+            setCellsToActivate([]);
             setIsPlaying(false);
         }
     };
 
     const gameOver = () => {
-        return; // Implement game over logic here
+        setLevel(0);
+        return;
     };
 
     const fetchCell = async () => {
         try {
-            const response = await fetch('http://localhost:5071/api/Sequence');
+            const response = await fetch('http://localhost:5071/api/Sequence/'+(level+1));
             if (!response.ok) {
                 throw new Error(`Error: ${response.statusText}`);
             }
-            const data: cell = await response.json();
+            const data: cell[] = await response.json();
             console.log(data);
-            cellsToActivate.length = 0;
-            while(cellsToActivate.length!=level+1){
-                cellsToActivate.push(data);
-            }
+            setCellsToActivate(data);
         } catch (error) {
             console.error('Error fetching cell:', error);
         }
@@ -65,17 +63,16 @@ export const Grid: React.FC = () => {
         setWrongClick(undefined);
 
         await fetchCell();
-        console.log(cellsToActivate);
         setTimeout(() => {
             cellsToActivate.forEach((cell, index) => {
                 setTimeout(() => {
                     setActiveCells([cell]);
                     setTimeout(() => setActiveCells([]), 300);
-                }, index * 1000);
+                }, index * 500);
             });
-        }, 1000);
+        }, 500);
 
-        setTimeout(() => setIsShowing(false), cellsToActivate.length * 1000 + 1000);
+        setTimeout(() => setIsShowing(false), cellsToActivate.length * 500 + 500);
     };
 
     return (
