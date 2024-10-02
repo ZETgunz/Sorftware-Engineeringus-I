@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using Newtonsoft.Json;
 
-namespace Melon_Benchmark_API.Stream
+namespace backend.Stream
 {
     public class StreamHandler
     {

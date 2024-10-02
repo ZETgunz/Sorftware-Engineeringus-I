@@ -2,7 +2,7 @@
 
 ## How to run
 
-- Navigate to `Melon_Benchmark_API`
+- Navigate to `backend`
 - Run `dotnet run`
 - Navigate to `frontend`
 - Run `npm run dev`

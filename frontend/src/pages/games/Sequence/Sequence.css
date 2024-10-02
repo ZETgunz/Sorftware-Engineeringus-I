@@ -1,4 +1,4 @@
-.sequance-container {
+.sequence-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -7,17 +7,17 @@
     font-family: Arial, sans-serif;
 }
 
-.sequance-container h1 {
+.sequence-container h1 {
     font-size: 2.5rem;
     margin-bottom: 1rem;
 }
 
-.sequance-container p {
+.sequence-container p {
     font-size: 1.25rem;
     margin-bottom: 2rem;
 }
 
-.sequance-container button {
+.sequence-container button {
     margin-top: 20px;
     padding: 0.75rem 1.5rem;
     font-size: 1rem;
