@@ -1,5 +1,6 @@
 using Melon_Benchmark_API.Models;
 using Microsoft.AspNetCore.Mvc;
+using Melon_Benchmark_API.Stream;
 
 namespace API.Controllers
 {
@@ -7,12 +8,9 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class GamesController : ControllerBase
     {
-        private static readonly List<Game> games =
-        [
-            new Game { Id = 1, Name = "Melon Ninja", Description = "Slice as many Melons as possible", Route = "/melonNinja" },
-            new Game { Id = 2, Name = "Sequence Memorization", Description = "Remeber the melon sequance", Route = "/sequance" },
-            new Game { Id = 3, Name = "Speed Writing", Description = "Write the text as fast as possible the least amount of mistakes", Route = "/speedWriting"}
-        ];
+        private static readonly StreamHandler _streamHandler = new StreamHandler("games.json");
+
+        private static readonly List<Game> games = _streamHandler.ReadJsonObject<List<Game>>();
 
 
         [HttpGet]
@@ -30,6 +28,7 @@ namespace API.Controllers
             }
 
             games.Add(newGame);
+            _streamHandler.WriteJsonObject(games);
 
             return CreatedAtAction(nameof(GetGames), new { id = newGame.Id }, newGame);
         }

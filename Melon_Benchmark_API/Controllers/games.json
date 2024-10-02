@@ -1,0 +1,20 @@
+[
+  {
+    "Id": 1,
+    "Name": "Melon Ninja",
+    "Description": "Slice as many Melons as possible",
+    "Route": "/melonNinja"
+  },
+  {
+    "Id": 2,
+    "Name": "Sequence Memorization",
+    "Description": "Remeber the melon sequance",
+    "Route": "/sequance"
+  },
+  {
+    "Id": 3,
+    "Name": "Speed Writing",
+    "Description": "Write the text as fast as possible the least amount of mistakes",
+    "Route": "/speedWriting"
+  }
+]

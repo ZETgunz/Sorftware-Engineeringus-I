@@ -1,3 +1,6 @@
+using Melon_Benchmark_API.Stream;
+using Melon_Benchmark_API.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>
