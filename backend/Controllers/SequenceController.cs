@@ -12,8 +12,7 @@ namespace backend.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<int>> GetCell()
         {
-            return Ok(new SequenceCell { row = rand.Next() % 3, column = rand.Next() % 3 });
+        return Ok(new SequenceCell{ row = rand.Next() % 3, column = rand.Next() % 3 });
         }
     }
-
 }
