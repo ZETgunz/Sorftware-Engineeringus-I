@@ -1,11 +1,11 @@
 import { Grid } from "../../../components/Grid/grid";
 import { useState } from "react";
-import "./Sequance.css";
+import "./Sequence.css";
 
-export const Sequance = () => {
+export const Sequence = () => {
 
     return (
-        <div className="sequance-container">
+        <div className="sequence-container">
             <Grid />
         </div>
     );

@@ -45,7 +45,7 @@ export const Grid: React.FC = () => {
 
     const fetchCell = async () => {
         try {
-            const response = await fetch('http://localhost:5071/api/Sequance');
+            const response = await fetch('http://localhost:5071/api/Sequence');
             if (!response.ok) {
                 throw new Error(`Error: ${response.statusText}`);
             }
@@ -86,7 +86,7 @@ export const Grid: React.FC = () => {
 
     return (
         <div className="grid">
-            <h1>Sequance</h1>
+            <h1>Sequence</h1>
             <h2>Level: {level}</h2>
             {grid.map((row, rowIndex) => (
                 <div key={rowIndex} className="row">

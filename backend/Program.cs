@@ -1,5 +1,5 @@
-using Melon_Benchmark_API.Stream;
-using Melon_Benchmark_API.Models;
+using backend.Stream;
+using backend.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 

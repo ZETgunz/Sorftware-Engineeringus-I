@@ -1,4 +1,4 @@
-namespace Melon_Benchmark_API.Models
+namespace backend.Models
 {
     public class Game
     {
