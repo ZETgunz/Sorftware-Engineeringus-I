@@ -7,8 +7,8 @@
   },
   {
     "Id": 2,
-    "Name": "Melon Sequence",
-    "Description": "Remember the melon sequence",
+    "Name": "Sequence Memorization",
+    "Description": "Remeber the melon sequence",
     "Route": "/sequence"
   },
   {
