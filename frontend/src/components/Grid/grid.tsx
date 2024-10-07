@@ -13,7 +13,7 @@ export const Grid: React.FC = () => {
     const [isPlaying, setIsPlaying] = useState(false);
     const [cellsToActivate, setCellsToActivate] = useState<cell[]>([]);
     const [isShowing, setIsShowing] = useState(false);
-    const [level, setLevel] = useState(1);
+    const [level, setLevel] = useState(0);
     const [click, setClick] = useState(0);
     const [wrongClick, setWrongClick] = useState<cell>();
 
@@ -24,7 +24,6 @@ export const Grid: React.FC = () => {
             setActiveCells([{ row: rowIndex, column: colIndex }]);
             setTimeout(() => setActiveCells([]), 300);
             if (click === cellsToActivate.length - 1) {
-                setLevel(level + 1);
                 setClick(0);
                 playGame();
             }
@@ -33,55 +32,47 @@ export const Grid: React.FC = () => {
             setWrongClick({ row: rowIndex, column: colIndex });
             setClick(0);
             gameOver();
-            cellsToActivate.length = 0;
+            setCellsToActivate([]);
             setIsPlaying(false);
         }
-
     };
 
     const gameOver = () => {
-        return; // Implement game over logic here
+        setLevel(0);
+        return;
     };
 
     const fetchCell = async () => {
         try {
-            const response = await fetch('http://localhost:5071/api/Sequence');
+            const response = await fetch('http://localhost:5071/api/Sequence/'+(level+1));
             if (!response.ok) {
                 throw new Error(`Error: ${response.statusText}`);
             }
-            const data: cell = await response.json();
+            const data: cell[] = await response.json();
             console.log(data);
-            cellsToActivate.push(data);
-
-
+            setCellsToActivate(data);
         } catch (error) {
             console.error('Error fetching cell:', error);
         }
     };
 
-
-
     const playGame = async () => {
+        setLevel(level + 1);
         setIsPlaying(true);
         setIsShowing(true);
         setWrongClick(undefined);
 
-
-
         await fetchCell();
-        console.log(cellsToActivate);
         setTimeout(() => {
             cellsToActivate.forEach((cell, index) => {
                 setTimeout(() => {
                     setActiveCells([cell]);
                     setTimeout(() => setActiveCells([]), 300);
-                }, index * 1000);
+                }, index * 500);
             });
-        }, 1000);
+        }, 500);
 
-
-        setTimeout(() => setIsShowing(false), cellsToActivate.length * 1000 + 1000);
-
+        setTimeout(() => setIsShowing(false), cellsToActivate.length * 500 + 500);
     };
 
     return (
@@ -94,14 +85,12 @@ export const Grid: React.FC = () => {
                         <div
                             key={colIndex}
                             className={`cell ${activeCells.some(activeCell => activeCell.row === rowIndex && activeCell.column === colIndex) ? 'active' : ''} ${wrongClick?.row === rowIndex && wrongClick?.column === colIndex ? 'wrong' : ''}`}
-
                             onClick={() => handleClick(rowIndex, colIndex)}
                         >
                         </div>
                     ))}
                 </div>
             ))}
-
             <button onClick={() => playGame()} className={isPlaying ? 'disabled' : 'active'}>Start</button>
         </div >
     );
