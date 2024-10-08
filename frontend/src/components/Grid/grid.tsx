@@ -24,9 +24,9 @@ export const Grid: React.FC = () => {
             setActiveCells([{ row: rowIndex, column: colIndex }]);
             setTimeout(() => setActiveCells([]), 300);
             if (click === cellsToActivate.length - 1) {
+                setLevel(level + 1);
                 setClick(0);
-                setIsShowing(true);
-                setTimeout(() => playGame(), 500);
+                playGame();
             }
         }
         else {
@@ -45,15 +45,15 @@ export const Grid: React.FC = () => {
 
     const fetchCell = async () => {
         try {
-            const response = await fetch('http://localhost:5071/api/Sequence/' + (level + 1));
+            const response = await fetch('http://localhost:5071/api/Sequence');
             if (!response.ok) {
                 throw new Error(`Error: ${response.statusText}`);
             }
-            const data: cell[] = await response.json();
-            setCellsToActivate(data);
+            const data: cell = await response.json();
             console.log(data);
-            cellAnimation(data);
-            return data;
+            cellsToActivate.push(data);
+
+
         } catch (error) {
             console.error('Error fetching cell:', error);
         }
@@ -65,19 +65,23 @@ export const Grid: React.FC = () => {
         setIsPlaying(true);
         setIsShowing(true);
         setWrongClick(undefined);
-        await fetchCell();
-    };
 
-    const cellAnimation = (data: cell[]) => {
+
+
+        await fetchCell();
+        console.log(cellsToActivate);
         setTimeout(() => {
-            data.forEach((cell, index) => {
+            cellsToActivate.forEach((cell, index) => {
                 setTimeout(() => {
                     setActiveCells([cell]);
                     setTimeout(() => setActiveCells([]), 300);
                 }, index * 600);
             });
-        }, 500);
-        setTimeout(() => setIsShowing(false), cellsToActivate.length * 500 + 500);
+        }, 600);
+
+
+        setTimeout(() => setIsShowing(false), cellsToActivate.length * 600 + 300);
+
     };
 
     return (
