@@ -1,6 +1,6 @@
 using backend.Models;
 using Microsoft.AspNetCore.Mvc;
-using backend.Stream;
+using backend.JsonCRUD;
 
 namespace API.Controllers
 {
@@ -8,14 +8,15 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class GamesController : ControllerBase
     {
-        private static readonly StreamHandler _streamHandler = new StreamHandler("games.json");
+        private static readonly JsonCRUD _JsonCRUD = new JsonCRUD("games.json");
 
-        private static readonly List<Game> games = _streamHandler.ReadJsonObject<List<Game>>();
+        private static List<Game> games = new List<Game>();
 
 
         [HttpGet]
         public ActionResult<IEnumerable<Game>> GetGames()
         {
+            games = _JsonCRUD.ReadJsonObject<List<Game>>();
             return Ok(games);
         }
 
@@ -28,7 +29,7 @@ namespace API.Controllers
             }
 
             games.Add(newGame);
-            _streamHandler.WriteJsonObject(games);
+            _JsonCRUD.WriteJsonObject(games);
 
             return CreatedAtAction(nameof(GetGames), new { id = newGame.Id }, newGame);
         }
