@@ -13,7 +13,7 @@ export const Grid: React.FC = () => {
     const [isPlaying, setIsPlaying] = useState(false);
     const [cellsToActivate, setCellsToActivate] = useState<cell[]>([]);
     const [isShowing, setIsShowing] = useState(false);
-    const [level, setLevel] = useState(0);
+    const [level, setLevel] = useState(1);
     const [click, setClick] = useState(0);
     const [wrongClick, setWrongClick] = useState<cell>();
 
@@ -24,7 +24,6 @@ export const Grid: React.FC = () => {
             setActiveCells([{ row: rowIndex, column: colIndex }]);
             setTimeout(() => setActiveCells([]), 300);
             if (click === cellsToActivate.length - 1) {
-
                 setClick(0);
                 setIsShowing(true);
                 setTimeout(() => playGame(), 500);
@@ -34,14 +33,14 @@ export const Grid: React.FC = () => {
             setWrongClick({ row: rowIndex, column: colIndex });
             setClick(0);
             gameOver();
-            setCellsToActivate([]);
+            cellsToActivate.length = 0;
             setIsPlaying(false);
         }
+
     };
 
     const gameOver = () => {
-        setLevel(0);
-        return;
+        return; // Implement game over logic here
     };
 
     const fetchCell = async () => {
@@ -60,8 +59,9 @@ export const Grid: React.FC = () => {
         }
     };
 
+
+
     const playGame = async () => {
-        setLevel(level + 1);
         setIsPlaying(true);
         setIsShowing(true);
         setWrongClick(undefined);
@@ -74,7 +74,7 @@ export const Grid: React.FC = () => {
                 setTimeout(() => {
                     setActiveCells([cell]);
                     setTimeout(() => setActiveCells([]), 300);
-                }, index * 500);
+                }, index * 600);
             });
         }, 500);
         setTimeout(() => setIsShowing(false), cellsToActivate.length * 500 + 500);
@@ -90,12 +90,14 @@ export const Grid: React.FC = () => {
                         <div
                             key={colIndex}
                             className={`cell ${activeCells.some(activeCell => activeCell.row === rowIndex && activeCell.column === colIndex) ? 'active' : ''} ${wrongClick?.row === rowIndex && wrongClick?.column === colIndex ? 'wrong' : ''}`}
+
                             onClick={() => handleClick(rowIndex, colIndex)}
                         >
                         </div>
                     ))}
                 </div>
             ))}
+
             <button onClick={() => playGame()} className={isPlaying ? 'disabled' : 'active'}>Start</button>
         </div >
     );

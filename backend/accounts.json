@@ -1,0 +1,30 @@
+[
+  {
+    "score": 0,
+    "Username": "string",
+    "Password": "string",
+    "role": 0,
+    "id": "string"
+  },
+  {
+    "score": 0,
+    "Username": "strin1g",
+    "Password": "string",
+    "role": 0,
+    "id": "string"
+  },
+  {
+    "score": 0,
+    "Username": "stri2ng",
+    "Password": "string",
+    "role": 0,
+    "id": "b5867f49-ab10-42f7-8416-5d1bb79a0677"
+  },
+  {
+    "score": 0,
+    "Username": "str3i2ng",
+    "Password": "string",
+    "role": 0,
+    "id": "0e5b88b2-2553-4ff1-ad4f-bbf37e5a7965"
+  }
+]

@@ -2,13 +2,13 @@ using System;
 using System.IO;
 using Newtonsoft.Json;
 
-namespace backend.Stream
+namespace backend.JsonCRUD
 {
-    public class StreamHandler
+    public class JsonCRUD
     {
         private readonly string _filePath;
 
-        public StreamHandler(string filePath)
+        public JsonCRUD(string filePath)
         {
             _filePath = filePath;
         }
