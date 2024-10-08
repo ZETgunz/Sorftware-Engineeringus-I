@@ -24,8 +24,10 @@ export const Grid: React.FC = () => {
             setActiveCells([{ row: rowIndex, column: colIndex }]);
             setTimeout(() => setActiveCells([]), 300);
             if (click === cellsToActivate.length - 1) {
+
                 setClick(0);
-                playGame();
+                setIsShowing(true);
+                setTimeout(() => playGame(), 500);
             }
         }
         else {
@@ -44,7 +46,7 @@ export const Grid: React.FC = () => {
 
     const fetchCell = async () => {
         try {
-            const response = await fetch('http://localhost:5071/api/Sequence/'+(level+1));
+            const response = await fetch('http://localhost:5071/api/Sequence/' + (level + 1));
             if (!response.ok) {
                 throw new Error(`Error: ${response.statusText}`);
             }
