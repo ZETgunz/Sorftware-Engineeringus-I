@@ -10,7 +10,7 @@ namespace backend.Controllers
         private static readonly Random rand = new Random();
 
         [HttpGet]
-        public ActionResult<IEnumerable<int>> GetCell()
+        public ActionResult<SequenceCell> GetCell()
         {
             return Ok(new SequenceCell { row = rand.Next() % 3, column = rand.Next() % 3 });
         }

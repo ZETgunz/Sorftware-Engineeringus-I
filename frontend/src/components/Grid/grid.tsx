@@ -75,12 +75,12 @@ export const Grid: React.FC = () => {
                 setTimeout(() => {
                     setActiveCells([cell]);
                     setTimeout(() => setActiveCells([]), 300);
-                }, index * 1000);
+                }, index * 600);
             });
-        }, 1000);
+        }, 600);
 
 
-        setTimeout(() => setIsShowing(false), cellsToActivate.length * 1000 + 1000);
+        setTimeout(() => setIsShowing(false), cellsToActivate.length * 600 + 300);
 
     };
 
