@@ -49,8 +49,10 @@ export const Grid: React.FC = () => {
                 throw new Error(`Error: ${response.statusText}`);
             }
             const data: cell[] = await response.json();
-            console.log(data);
             setCellsToActivate(data);
+            console.log(data);
+            cellAnimation(data);
+            return data;
         } catch (error) {
             console.error('Error fetching cell:', error);
         }
@@ -61,17 +63,18 @@ export const Grid: React.FC = () => {
         setIsPlaying(true);
         setIsShowing(true);
         setWrongClick(undefined);
-
         await fetchCell();
+    };
+
+    const cellAnimation = (data: cell[]) => {
         setTimeout(() => {
-            cellsToActivate.forEach((cell, index) => {
+            data.forEach((cell, index) => {
                 setTimeout(() => {
                     setActiveCells([cell]);
                     setTimeout(() => setActiveCells([]), 300);
                 }, index * 500);
             });
         }, 500);
-
         setTimeout(() => setIsShowing(false), cellsToActivate.length * 500 + 500);
     };
 
