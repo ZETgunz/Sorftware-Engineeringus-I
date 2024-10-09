@@ -8,13 +8,13 @@
   {
     "Id": 2,
     "Name": "Sequence Memorization",
-    "Description": "Remeber the melon sequence",
+    "Description": "Remeber the Melon sequence",
     "Route": "/sequence"
   },
   {
     "Id": 3,
     "Name": "Speed Writing",
-    "Description": "Write the text as fast as possible the least amount of mistakes",
+    "Description": "Write about Melons as fast and correct as possible",
     "Route": "/speedWriting"
   }
 ]
