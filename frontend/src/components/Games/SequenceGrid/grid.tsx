@@ -40,7 +40,8 @@ export const Grid: React.FC = () => {
     };
 
     const gameOver = () => {
-        return; // Implement game over logic here
+        setLevel(0);
+        return;
     };
 
     const fetchCell = async () => {
@@ -52,7 +53,7 @@ export const Grid: React.FC = () => {
             const data: cell[] = await response.json();
             setCellsToActivate(data);
             console.log(data);
-            cellAnimation(data);
+            playCellAnimation(data);
             return data;
         } catch (error) {
             console.error('Error fetching cell:', error);
@@ -69,7 +70,7 @@ export const Grid: React.FC = () => {
         await fetchCell();
     };
 
-    const cellAnimation = (data: cell[]) => {
+    const playCellAnimation = (data: cell[]) => {
         setTimeout(() => {
             data.forEach((cell, index) => {
                 setTimeout(() => {
@@ -83,7 +84,7 @@ export const Grid: React.FC = () => {
 
     return (
         <div className="grid">
-            <h1>Sequence</h1>
+            <h1>Melon Sequence</h1>
             <h2>Level: {level}</h2>
             {grid.map((row, rowIndex) => (
                 <div key={rowIndex} className="row">
