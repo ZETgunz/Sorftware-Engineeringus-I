@@ -1,4 +1,4 @@
-import { Grid } from "../../../components/Grid/grid";
+import { Grid } from "../../../components/Games/SequenceGrid/grid";
 import { useState } from "react";
 import "./Sequence.css";
 
