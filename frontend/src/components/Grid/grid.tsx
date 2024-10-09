@@ -24,9 +24,9 @@ export const Grid: React.FC = () => {
             setActiveCells([{ row: rowIndex, column: colIndex }]);
             setTimeout(() => setActiveCells([]), 300);
             if (click === cellsToActivate.length - 1) {
-                setLevel(level + 1);
                 setClick(0);
-                playGame();
+                setIsShowing(true);
+                setTimeout(() => playGame(), 500);
             }
         }
         else {
@@ -45,15 +45,15 @@ export const Grid: React.FC = () => {
 
     const fetchCell = async () => {
         try {
-            const response = await fetch('http://localhost:5071/api/Sequence');
+            const response = await fetch('http://localhost:5071/api/Sequence/' + (level + 1));
             if (!response.ok) {
                 throw new Error(`Error: ${response.statusText}`);
             }
-            const data: cell = await response.json();
+            const data: cell[] = await response.json();
+            setCellsToActivate(data);
             console.log(data);
-            cellsToActivate.push(data);
-
-
+            cellAnimation(data);
+            return data;
         } catch (error) {
             console.error('Error fetching cell:', error);
         }
@@ -66,23 +66,19 @@ export const Grid: React.FC = () => {
         setIsPlaying(true);
         setIsShowing(true);
         setWrongClick(undefined);
-
-
-
         await fetchCell();
-        console.log(cellsToActivate);
+    };
+
+    const cellAnimation = (data: cell[]) => {
         setTimeout(() => {
-            cellsToActivate.forEach((cell, index) => {
+            data.forEach((cell, index) => {
                 setTimeout(() => {
                     setActiveCells([cell]);
                     setTimeout(() => setActiveCells([]), 300);
                 }, index * 600);
             });
-        }, 600);
-
-
-        setTimeout(() => setIsShowing(false), cellsToActivate.length * 600 + 300);
-
+        }, 500);
+        setTimeout(() => setIsShowing(false), cellsToActivate.length * 500 + 500);
     };
 
     return (
