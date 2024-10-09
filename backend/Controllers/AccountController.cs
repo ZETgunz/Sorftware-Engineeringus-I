@@ -1,6 +1,9 @@
 using backend.Models;
+using backend.DTOs.Account;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using backend.JsonCRUD;
+using backend.Mappers;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -10,11 +13,38 @@ public class AccountController : ControllerBase
 
     private static List<Account> accounts = new List<Account>();
 
-    [HttpPost]
-    public IActionResult AddAccount([FromBody] Account newAccount)
+    [HttpGet]
+    public ActionResult<IEnumerable<AccountDTO>> GetAccounts()
     {
         accounts = _JsonCRUD.ReadJsonObject<List<Account>>();
-        if (newAccount == null || string.IsNullOrWhiteSpace(newAccount.Username) || string.IsNullOrWhiteSpace(newAccount.Password))
+        return Ok(accounts.Select(account => AccountMapper.AccountToAccountDTO(account)));
+    }
+
+
+    [HttpGet("{username}")]
+    public ActionResult<AccountDTO> GetAccount([FromRoute] string username)
+    {
+        accounts = _JsonCRUD.ReadJsonObject<List<Account>>();
+        Account account = accounts.Find(account => account.Username == username);
+        if (account == null)
+        {
+            return NotFound("Account not found with username :" + username);
+        }
+        return Ok(AccountMapper.AccountToAccountDTO(account));
+    }
+
+    [HttpPost]
+    public IActionResult AddAccount([FromBody] AccountCreateDTO newAccountCreateDTO)
+    {
+        if (newAccountCreateDTO == null)
+        {
+            return BadRequest("Account details cannot be empty.");
+        }
+
+        Account newAccount = AccountMapper.AccountCreateDTOToAccount(newAccountCreateDTO);
+
+        accounts = _JsonCRUD.ReadJsonObject<List<Account>>();
+        if (string.IsNullOrWhiteSpace(newAccount.Username) || string.IsNullOrWhiteSpace(newAccount.Password))
         {
             return BadRequest("Account details cannot be empty.");
         }
@@ -23,8 +53,10 @@ public class AccountController : ControllerBase
             return BadRequest("Account with the same username already exists.");
         }
 
-        accounts.Add(new Account(newAccount.Username, newAccount.Password, newAccount.role));
+        accounts.Add(newAccount);
         _JsonCRUD.WriteJsonObject(accounts);
-        return Ok(newAccount);
+        return CreatedAtAction(nameof(GetAccount), new { username = newAccount.Username }, AccountMapper.AccountToAccountDTO(newAccount));
     }
+
+
 }
