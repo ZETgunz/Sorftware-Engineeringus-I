@@ -13,7 +13,7 @@ export const Grid: React.FC = () => {
     const [isPlaying, setIsPlaying] = useState(false);
     const [cellsToActivate, setCellsToActivate] = useState<cell[]>([]);
     const [isShowing, setIsShowing] = useState(false);
-    const [level, setLevel] = useState(1);
+    const [level, setLevel] = useState(0);
     const [click, setClick] = useState(0);
     const [wrongClick, setWrongClick] = useState<cell>();
 
@@ -62,6 +62,7 @@ export const Grid: React.FC = () => {
 
 
     const playGame = async () => {
+        setLevel(level+1);
         setIsPlaying(true);
         setIsShowing(true);
         setWrongClick(undefined);
