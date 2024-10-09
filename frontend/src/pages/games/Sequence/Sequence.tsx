@@ -1,5 +1,4 @@
-import { Grid } from "../../../components/Grid/grid";
-import { useState } from "react";
+import { Grid } from "../../../components/Games/SequenceGrid/grid";
 import "./Sequence.css";
 
 export const Sequence = () => {

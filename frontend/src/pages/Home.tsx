@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Tile } from '../components/Tile/tile';
+import { Tile } from '../components/GameTiles/tile';
 import './Home.css';
 
 interface Game {

@@ -3,28 +3,42 @@
     "score": 0,
     "Username": "string",
     "Password": "string",
-    "role": 0,
-    "id": "string"
+    "role": 1
   },
   {
     "score": 0,
     "Username": "strin1g",
     "Password": "string",
-    "role": 0,
-    "id": "string"
+    "role": 1
   },
   {
     "score": 0,
-    "Username": "stri2ng",
+    "Username": "strin11g",
     "Password": "string",
-    "role": 0,
-    "id": "b5867f49-ab10-42f7-8416-5d1bb79a0677"
+    "role": 1
   },
   {
     "score": 0,
-    "Username": "str3i2ng",
+    "Username": "strinččg",
     "Password": "string",
-    "role": 0,
-    "id": "0e5b88b2-2553-4ff1-ad4f-bbf37e5a7965"
+    "role": 1
+  },
+  {
+    "score": 0,
+    "Username": "strinccg",
+    "Password": "string",
+    "role": 1
+  },
+  {
+    "score": 0,
+    "Username": "strincccg",
+    "Password": "string",
+    "role": 1
+  },
+  {
+    "score": 0,
+    "Username": "stringg",
+    "Password": "string",
+    "role": 1
   }
 ]

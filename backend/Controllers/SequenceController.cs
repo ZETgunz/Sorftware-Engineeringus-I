@@ -12,9 +12,10 @@ namespace backend.Controllers
         [HttpGet("{level}")]
         public ActionResult<List<SequenceCell>> GetCell(int level)
         {
-            List<SequenceCell> sequence = new List<SequenceCell>{};
-            while(sequence.Count()!=level){
-                sequence.Add(new SequenceCell {row = rand.Next() % 3, column = rand.Next() % 3 });
+            List<SequenceCell> sequence = new List<SequenceCell> { };
+            while (sequence.Count() != level)
+            {
+                sequence.Add(new SequenceCell { row = rand.Next() % 3, column = rand.Next() % 3 });
             }
             return Ok(sequence);
         }
