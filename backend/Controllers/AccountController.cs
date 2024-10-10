@@ -17,7 +17,7 @@ public class AccountController : ControllerBase
     public ActionResult<IEnumerable<AccountDTO>> GetAccounts()
     {
         accounts = _JsonCRUD.ReadJsonObject<List<Account>>();
-        return Ok(accounts.Select(account => AccountMapper.AccountToAccountDTO(account)));
+        return Ok(accounts.Select(account => account.AccountToAccountDTO()));
     }
 
 
@@ -30,7 +30,7 @@ public class AccountController : ControllerBase
         {
             return NotFound("Account not found with username :" + username);
         }
-        return Ok(AccountMapper.AccountToAccountDTO(account));
+        return Ok(account.AccountToAccountDTO());
     }
 
     [HttpPost]
@@ -41,7 +41,7 @@ public class AccountController : ControllerBase
             return BadRequest("Account details cannot be empty.");
         }
 
-        Account newAccount = AccountMapper.AccountCreateDTOToAccount(newAccountCreateDTO);
+        Account newAccount = newAccountCreateDTO.AccountCreateDTOToAccount();
 
         accounts = _JsonCRUD.ReadJsonObject<List<Account>>();
         if (string.IsNullOrWhiteSpace(newAccount.Username) || string.IsNullOrWhiteSpace(newAccount.Password))
@@ -55,7 +55,7 @@ public class AccountController : ControllerBase
 
         accounts.Add(newAccount);
         _JsonCRUD.WriteJsonObject(accounts);
-        return CreatedAtAction(nameof(GetAccount), new { username = newAccount.Username }, AccountMapper.AccountToAccountDTO(newAccount));
+        return CreatedAtAction(nameof(GetAccount), new { username = newAccount.Username }, newAccount.AccountToAccountDTO());
     }
 
 

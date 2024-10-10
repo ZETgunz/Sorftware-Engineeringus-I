@@ -7,7 +7,7 @@ namespace backend.Mappers
 {
     public static class AccountMapper
     {
-        public static AccountDTO AccountToAccountDTO(Account account)
+        public static AccountDTO AccountToAccountDTO(this Account account)
         {
             return new AccountDTO
             {
@@ -18,7 +18,7 @@ namespace backend.Mappers
             };
         }
 
-        public static Account AccountCreateDTOToAccount(AccountCreateDTO accountCreateDTO)
+        public static Account AccountCreateDTOToAccount(this AccountCreateDTO accountCreateDTO)
         {
             return new Account
             (

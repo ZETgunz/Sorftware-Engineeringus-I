@@ -40,5 +40,11 @@
     "Username": "stringg",
     "Password": "string",
     "role": 1
+  },
+  {
+    "score": 0,
+    "Username": "gustas",
+    "Password": "string",
+    "role": 1
   }
 ]
