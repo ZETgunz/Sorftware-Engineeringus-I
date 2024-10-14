@@ -24,18 +24,23 @@ namespace backend.Mappers
             return new Account
             (
                 accountCreateDTO.Username,
-                accountCreateDTO.Password
+                accountCreateDTO.Password,
+                score: accountCreateDTO.score
             );
         }
 
-        public static LeaderBoardAccountDTO AccountToLeaderBoardAccountDTO(this Account account, int rank)
+        public static LeaderboardAccountDTO AccountToLeaderboardAccountDTO(this Account account, int rank)
         {
-            return new LeaderBoardAccountDTO
+            return new LeaderboardAccountDTO
             {
                 Username = account.Username,
                 score = account.score,
                 rank = rank
             };
+        }
+        public static Account AccountDTOToAccount(this AccountDTO accountDTO)
+        {
+            return new Account(accountDTO.Username, accountDTO.Password, accountDTO.role, accountDTO.score);
         }
     }
 }

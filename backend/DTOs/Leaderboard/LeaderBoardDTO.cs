@@ -1,6 +1,6 @@
 namespace backend.DTOs.Leaderboard
 {
-    public record LeaderBoardAccountDTO
+    public record LeaderboardAccountDTO
     {
         public string Username { get; init; }
         public int score { get; init; }

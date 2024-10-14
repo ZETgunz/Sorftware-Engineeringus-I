@@ -1,5 +1,6 @@
 using backend.Models;
 using backend.DTOs.Account;
+using backend.DTOs.Leaderboard;
 using Microsoft.AspNetCore.Mvc;
 using backend.Mappers;
 using backend.Services;
@@ -13,12 +14,15 @@ namespace backend.Controllers
         private static readonly JsonCRUD _JsonCRUD = new JsonCRUD("accounts.json");
         private static List<Account> accounts = new List<Account>();
 
+        private static List<LeaderboardAccountDTO> leaderboard = new List<LeaderboardAccountDTO>();
+
         [HttpGet]
-        public ActionResult<IEnumerable<Account>> GetLeaderboard()
+        public ActionResult<IEnumerable<LeaderboardAccountDTO>> GetLeaderboard()
         {
             accounts = _JsonCRUD.ReadJsonObject<List<Account>>();
             accounts.Sort();
-            return Ok(accounts.Select(account => account.AccountToLeaderBoardAccountDTO(accounts.IndexOf(account) + 1)));
+            leaderboard = accounts.Select(account => account.AccountToLeaderboardAccountDTO(accounts.IndexOf(account) + 1)).ToList();
+            return Ok(leaderboard);
         }
 
         [HttpGet("{username}")]
@@ -31,7 +35,7 @@ namespace backend.Controllers
             {
                 return NotFound("Account not found with username :" + username);
             }
-            return Ok(account.AccountToLeaderBoardAccountDTO(accounts.IndexOf(account) + 1));
+            return Ok(account.AccountToLeaderboardAccountDTO(accounts.IndexOf(account) + 1));
 
         }
     }
