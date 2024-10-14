@@ -20,7 +20,7 @@ export const Nav: React.FC = () => {
                 </li>
                 <li className="nav-item">
                     <Link to="/account" className="nav-link">
-                        ACCOUNT
+                        LOGIN
                     </Link>
                 </li>
             </ul>
