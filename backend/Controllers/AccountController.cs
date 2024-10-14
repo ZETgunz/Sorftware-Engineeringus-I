@@ -57,5 +57,22 @@ public class AccountController : ControllerBase
         return CreatedAtAction(nameof(GetAccount), new { username = newAccount.Username }, newAccount.AccountToAccountDTO());
     }
 
+    [HttpPut("{username}")]
+    public IActionResult UpdateAccount([FromRoute] string username, [FromBody] AccountUpdateDTO updatedAccountUpdateDTO)
+    {
+        accounts = _JsonCRUD.ReadJsonObject<List<Account>>();
+        Account account = accounts.Find(account => account.Username == username);
+        if (account == null)
+        {
+            return NotFound("Account not found with username :" + username);
+        }
+        accounts.Remove(account);
+        account = updatedAccountUpdateDTO.AccountUpdateDTOToAccount();
+        accounts.Add(account);
+
+        _JsonCRUD.WriteJsonObject(accounts);
+        return Ok(account.AccountToAccountDTO());
+    }
+
 
 }
