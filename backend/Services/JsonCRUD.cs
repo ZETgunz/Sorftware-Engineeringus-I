@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using Newtonsoft.Json;
 
-namespace backend.JsonCRUD
+namespace backend.Services
 {
     public class JsonCRUD
     {
