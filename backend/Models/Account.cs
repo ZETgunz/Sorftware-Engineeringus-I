@@ -20,7 +20,7 @@ namespace backend.Models
 
         public int CompareTo(Account other)
         {
-            return this.score.CompareTo(other.score);
+            return (-this.score).CompareTo(-other.score);
         }
         public bool Equals(Account other)
         {

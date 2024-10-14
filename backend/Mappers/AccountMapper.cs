@@ -1,5 +1,6 @@
 using backend.Models;
 using backend.DTOs.Account;
+using backend.DTOs.Leaderboard;
 using System;
 
 namespace backend.Mappers
@@ -25,6 +26,16 @@ namespace backend.Mappers
                 accountCreateDTO.Username,
                 accountCreateDTO.Password
             );
+        }
+
+        public static LeaderBoardAccountDTO AccountToLeaderBoardAccountDTO(this Account account, int rank)
+        {
+            return new LeaderBoardAccountDTO
+            {
+                Username = account.Username,
+                score = account.score,
+                rank = rank
+            };
         }
     }
 }
