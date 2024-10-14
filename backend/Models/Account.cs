@@ -7,20 +7,20 @@ namespace backend.Models
 
 
 
-        public Account(string username, string password, Role role = Role.User, int score = 0)
+        public Account(string username, string password, Role role = Role.User)
         {
             Username = username;
             Password = password;
             this.role = role;
-            this.score = score;
         }
         public string Username { get; set; }
         public string Password { get; set; }
         public Role role { get; set; }
-        public int score { get; set; }
+        public int score = 0;
+
         public int CompareTo(Account other)
         {
-            return (-this.score).CompareTo(-other.score);
+            return this.score.CompareTo(other.score);
         }
         public bool Equals(Account other)
         {
