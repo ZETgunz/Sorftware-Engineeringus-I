@@ -2,7 +2,9 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Home } from './pages/Home';
 import './App.css';
 import { Nav } from './components/Nav/nav';
-import { Account } from './pages/Account/Account';
+import { LeaderboardPage } from './pages/Leaderboard/leaderboard';
+import { AccountLogin } from './pages/Account/Login/login';
+import { AccountRegister } from './pages/Account/Register/register';
 import { Sequence } from './pages/games/Sequence/Sequence';
 
 export const App = () => {
@@ -12,8 +14,9 @@ export const App = () => {
       <Nav />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/leaderboard" element={<div>Leaderboard</div>} />
-        <Route path="/account" element={<Account />} />
+        <Route path="/leaderboard" element={<LeaderboardPage />} />
+        <Route path="/account/login" element={<AccountLogin />} />
+        <Route path="/account/register" element={<AccountRegister />} />
         <Route path="/sequence" element={<Sequence />} />
       </Routes>
     </BrowserRouter>

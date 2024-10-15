@@ -19,8 +19,8 @@ export const Nav: React.FC = () => {
                     </Link>
                 </li>
                 <li className="nav-item">
-                    <Link to="/account" className="nav-link">
-                        ACCOUNT
+                    <Link to="/account/login" className="nav-link">
+                        LOGIN
                     </Link>
                 </li>
             </ul>
