@@ -5,6 +5,17 @@ export const Register: React.FC = () => {
 
     const validate = async () => {
 
+        const username = (document.getElementById("username") as HTMLInputElement).value;
+        try {
+            const response = await fetch('http://localhost:5071/api/Account');
+            if (!response.ok) {
+                throw new Error(`Error: ${response.statusText}`);
+            }
+            alert("Account succesfully created!");
+            return;
+        } catch (error) {
+            console.error('Error creating account:', error);
+        }
 
     }
 

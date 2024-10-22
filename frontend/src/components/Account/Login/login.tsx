@@ -12,21 +12,18 @@ export const Login: React.FC = () => {
 
     const validate = async () => {
         
-        const username = document.getElementById("username")?.getAttribute("username");
-
+        const username = (document.getElementById("username") as HTMLInputElement).value;
         try {
-            const response = await fetch('http://localhost:5071/api/Account');
+            const response = await fetch('http://localhost:5071/api/Account/' + username);
             if (!response.ok) {
+                alert("Username not found")
                 throw new Error(`Error: ${response.statusText}`);
             }
+            alert(`Welcome, ${username}!`)
             return;
         } catch (error) {
             console.error('Error creating account:', error);
         }
-    }
-
-    const registerRedirect = () => {
-        AccountRegister();
     }
 
     return (
@@ -42,7 +39,6 @@ export const Login: React.FC = () => {
             <br />
             <br />
             <label>Don't have an account?</label>
-            
             <Link to="/account/register" element={<AccountRegister />} className="nav-link">Click to create one</Link>
         </div >
     );
