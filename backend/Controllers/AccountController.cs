@@ -11,12 +11,17 @@ public class AccountController : ControllerBase
     private static readonly JsonCRUD _JsonCRUD = new JsonCRUD("accounts.json");
 
     private static List<Account> accounts = new List<Account>();
+    private static List<AccountDTO> accountDTOs = new List<AccountDTO>();
 
     [HttpGet]
     public ActionResult<IEnumerable<AccountDTO>> GetAccounts()
     {
         accounts = _JsonCRUD.ReadJsonObject<List<Account>>();
-        return Ok(accounts.Select(account => account.AccountToAccountDTO()));
+        foreach (Account account in accounts)
+        {
+            accountDTOs.Add(account.AccountToAccountDTO());
+        }
+        return Ok(accountDTOs);
     }
 
 
@@ -61,6 +66,7 @@ public class AccountController : ControllerBase
     public IActionResult UpdateAccount([FromRoute] string username, [FromBody] AccountUpdateDTO updatedAccountUpdateDTO)
     {
         accounts = _JsonCRUD.ReadJsonObject<List<Account>>();
+
         Account account = accounts.Find(account => account.Username == username);
         if (account == null)
         {
