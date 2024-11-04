@@ -3,24 +3,23 @@ using backend.DTOs.Account;
 using Microsoft.AspNetCore.Mvc;
 using backend.Services;
 using backend.Mappers;
+using backend.Data;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AccountController : ControllerBase
+public class AccountController(AppDbContext context) : ControllerBase
 {
     private static readonly JsonCRUD _JsonCRUD = new JsonCRUD("accounts.json");
+    private readonly AppDbContext _context = context;
 
     private static List<Account> accounts = new List<Account>();
     private static List<AccountDTO> accountDTOs = new List<AccountDTO>();
 
     [HttpGet]
-    public ActionResult<IEnumerable<AccountDTO>> GetAccounts()
+    public ActionResult<List<AccountDTO>> GetAccounts()
     {
-        accounts = _JsonCRUD.ReadJsonObject<List<Account>>();
-        foreach (Account account in accounts)
-        {
-            accountDTOs.Add(account.AccountToAccountDTO());
-        }
+
+        accountDTOs = _context.AccountDTOs.ToList();
         return Ok(accountDTOs);
     }
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { AccountRegister } from '../../../pages/Account/Register/Register';
+import { AccountRegister } from '../../../pages/Account/Register/register';
 import { Link } from 'react-router-dom';
 import './login.css'; // Make sure to create a corresponding CSS file for styling
 
@@ -11,7 +11,7 @@ interface account {
 export const Login: React.FC = () => {
 
     const validate = async () => {
-        
+
         const username = (document.getElementById("username") as HTMLInputElement).value;
         try {
             const response = await fetch('http://localhost:5071/api/Account/' + username);
