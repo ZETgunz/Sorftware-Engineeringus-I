@@ -23,15 +23,20 @@ public class AccountController(AppDbContext context) : ControllerBase
     }
 
 
-    [HttpGet("{username}")]
-    public ActionResult<AccountDTO> GetAccount([FromRoute] string username)
+    [HttpGet("{username}/{password}")]
+    public ActionResult<AccountDTO> GetAccount([FromRoute] string username, [FromRoute] string password)
     {
         accountDTOs = _context.AccountDTOs.ToList();
         AccountDTO accountDTO = accountDTOs.Find(accountDTO => accountDTO.Username == username);
         if (accountDTO == null)
         {
-            return NotFound("Account not found with username :" + username);
+            return NotFound("Account not found with username :" + username + " and password: " + password);
         }
+        if (accountDTO.Password != password)
+        {
+            return NotFound("Account not found with username :" + username + " and password: " + password);
+        }
+
         return Ok(accountDTO);
     }
 
