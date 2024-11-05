@@ -65,7 +65,7 @@ public class AccountController(AppDbContext context) : ControllerBase
 
         _context.AccountDTOs.Add(newAccount.AccountToAccountDTO());
         _context.SaveChanges();
-        return CreatedAtAction(nameof(GetAccount), new { username = newAccount.Username }, newAccount.AccountToAccountDTO());
+        return Ok(newAccount.AccountToAccountDTO());
     }
 
     [HttpPut("{username}")]

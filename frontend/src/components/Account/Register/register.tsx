@@ -22,7 +22,6 @@ export const Register: React.FC = () => {
                     score,
                 }),
             });
-            console.log(response);
             if (!response.ok) {
                 throw new Error(`Error: ${response.statusText}`);
             }
