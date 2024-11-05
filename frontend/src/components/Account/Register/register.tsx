@@ -6,8 +6,23 @@ export const Register: React.FC = () => {
     const validate = async () => {
 
         const username = (document.getElementById("username") as HTMLInputElement).value;
+        const password = (document.getElementById("password") as HTMLInputElement).value;
+        const score = 0;
+            
+            
         try {
-            const response = await fetch('http://localhost:5071/api/Account');
+            const response = await fetch('http://localhost:5071/api/Account', {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    username,
+                    password,
+                    score,
+                }),
+            });
+            console.log(response);
             if (!response.ok) {
                 throw new Error(`Error: ${response.statusText}`);
             }
@@ -16,7 +31,6 @@ export const Register: React.FC = () => {
         } catch (error) {
             console.error('Error creating account:', error);
         }
-
     }
 
     return (

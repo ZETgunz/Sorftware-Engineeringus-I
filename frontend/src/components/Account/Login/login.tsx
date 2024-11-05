@@ -1,12 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { AccountRegister } from '../../../pages/Account/Register/register';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import './login.css'; // Make sure to create a corresponding CSS file for styling
-
-interface account {
-    username: string;
-    password: string;
-}
 
 export const Login: React.FC = () => {
 
