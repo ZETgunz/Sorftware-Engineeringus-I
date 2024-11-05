@@ -1,37 +1,25 @@
 using backend.Models;
 using Microsoft.AspNetCore.Mvc;
 using backend.Services;
+using backend.Data;
+
 
 namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class GamesController : ControllerBase
+    public class GamesController(AppDbContext context) : ControllerBase
     {
-        private static readonly JsonCRUD _JsonCRUD = new JsonCRUD("games.json");
+        private readonly AppDbContext _context = context;
 
         private static List<Game> games = new List<Game>();
-
 
         [HttpGet]
         public ActionResult<IEnumerable<Game>> GetGames()
         {
-            games = _JsonCRUD.ReadJsonObject<List<Game>>();
+            games = _context.Games.ToList();
             return Ok(games);
         }
 
-        [HttpPost]
-        public IActionResult AddGame([FromBody] Game newGame)
-        {
-            if (newGame == null || string.IsNullOrWhiteSpace(newGame.Name))
-            {
-                return BadRequest("Game details cannot be empty.");
-            }
-
-            games.Add(newGame);
-            _JsonCRUD.WriteJsonObject(games);
-
-            return CreatedAtAction(nameof(GetGames), new { id = newGame.Id }, newGame);
-        }
     }
 }

@@ -2,11 +2,11 @@ using backend.Models;
 
 namespace backend.DTOs.Account
 {
-    public record AccountDTO
+    public class AccountDTO
     {
         public string Username { get; init; }
-        public string Password { get; init; }
-        public Role role { get; init; }
-        public int score { get; init; }
+        public string Password { get; set; }
+        public Role role { get; set; }
+        public int score { get; set; }
     }
 }

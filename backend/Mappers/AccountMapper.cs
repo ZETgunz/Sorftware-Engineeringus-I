@@ -42,9 +42,5 @@ namespace backend.Mappers
         {
             return new Account(accountDTO.Username, accountDTO.Password, accountDTO.role, accountDTO.score);
         }
-        public static Account AccountUpdateDTOToAccount(this AccountUpdateDTO accountUpdateDTO)
-        {
-            return new Account(accountUpdateDTO.Username, accountUpdateDTO.Password, score: accountUpdateDTO.score);
-        }
     }
 }
