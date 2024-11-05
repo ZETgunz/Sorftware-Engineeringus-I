@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using backend.Models;
+using backend.Enums;
 using backend.DTOs.Account;
 
 namespace backend.Data;
