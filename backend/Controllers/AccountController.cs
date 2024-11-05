@@ -3,38 +3,41 @@ using backend.DTOs.Account;
 using Microsoft.AspNetCore.Mvc;
 using backend.Services;
 using backend.Mappers;
+using backend.Data;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AccountController : ControllerBase
+public class AccountController(AppDbContext context) : ControllerBase
 {
-    private static readonly JsonCRUD _JsonCRUD = new JsonCRUD("accounts.json");
+    private readonly AppDbContext _context = context;
 
     private static List<Account> accounts = new List<Account>();
     private static List<AccountDTO> accountDTOs = new List<AccountDTO>();
 
     [HttpGet]
-    public ActionResult<IEnumerable<AccountDTO>> GetAccounts()
+    public ActionResult<List<AccountDTO>> GetAccounts()
     {
-        accounts = _JsonCRUD.ReadJsonObject<List<Account>>();
-        foreach (Account account in accounts)
-        {
-            accountDTOs.Add(account.AccountToAccountDTO());
-        }
+
+        accountDTOs = _context.AccountDTOs.ToList();
         return Ok(accountDTOs);
     }
 
 
-    [HttpGet("{username}")]
-    public ActionResult<AccountDTO> GetAccount([FromRoute] string username)
+    [HttpGet("{username}/{password}")]
+    public ActionResult<AccountDTO> GetAccount([FromRoute] string username, [FromRoute] string password)
     {
-        accounts = _JsonCRUD.ReadJsonObject<List<Account>>();
-        Account account = accounts.Find(account => account.Username == username);
-        if (account == null)
+        accountDTOs = _context.AccountDTOs.ToList();
+        AccountDTO accountDTO = accountDTOs.Find(accountDTO => accountDTO.Username == username);
+        if (accountDTO == null)
         {
-            return NotFound("Account not found with username :" + username);
+            return NotFound("Account not found with username :" + username + " and password: " + password);
         }
-        return Ok(account.AccountToAccountDTO());
+        if (accountDTO.Password != password)
+        {
+            return NotFound("Account not found with username :" + username + " and password: " + password);
+        }
+
+        return Ok(accountDTO);
     }
 
     [HttpPost]
@@ -47,7 +50,9 @@ public class AccountController : ControllerBase
 
         Account newAccount = newAccountCreateDTO.AccountCreateDTOToAccount();
 
-        accounts = _JsonCRUD.ReadJsonObject<List<Account>>();
+        accountDTOs = _context.AccountDTOs.ToList();
+        accounts = accountDTOs.Select(accountDTO => accountDTO.AccountDTOToAccount()).ToList();
+
         if (string.IsNullOrWhiteSpace(newAccount.Username) || string.IsNullOrWhiteSpace(newAccount.Password))
         {
             return BadRequest("Account details cannot be empty.");
@@ -57,27 +62,32 @@ public class AccountController : ControllerBase
             return BadRequest("Account with the same username already exists.");
         }
 
-        accounts.Add(newAccount);
-        _JsonCRUD.WriteJsonObject(accounts);
+        _context.AccountDTOs.Add(newAccount.AccountToAccountDTO());
+        _context.SaveChanges();
         return CreatedAtAction(nameof(GetAccount), new { username = newAccount.Username }, newAccount.AccountToAccountDTO());
     }
 
     [HttpPut("{username}")]
     public IActionResult UpdateAccount([FromRoute] string username, [FromBody] AccountUpdateDTO updatedAccountUpdateDTO)
     {
-        accounts = _JsonCRUD.ReadJsonObject<List<Account>>();
-
-        Account account = accounts.Find(account => account.Username == username);
-        if (account == null)
+        if (updatedAccountUpdateDTO == null)
         {
-            return NotFound("Account not found with username :" + username);
+            return BadRequest("Account details cannot be empty.");
         }
-        accounts.Remove(account);
-        account = updatedAccountUpdateDTO.AccountUpdateDTOToAccount();
-        accounts.Add(account);
 
-        _JsonCRUD.WriteJsonObject(accounts);
-        return Ok(account.AccountToAccountDTO());
+        var accountDTO = _context.AccountDTOs.FirstOrDefault(a => a.Username == username);
+        if (accountDTO == null)
+        {
+            return NotFound("Account not found with username: " + username);
+        }
+
+        accountDTO.Password = updatedAccountUpdateDTO.Password;
+        accountDTO.score = updatedAccountUpdateDTO.score;
+
+        _context.AccountDTOs.Update(accountDTO);
+        _context.SaveChanges();
+
+        return Ok(accountDTO);
     }
 
 
