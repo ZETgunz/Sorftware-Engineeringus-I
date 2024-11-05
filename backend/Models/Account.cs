@@ -1,4 +1,5 @@
 using backend.Models;
+using backend.Enums;
 using System;
 namespace backend.Models
 {
