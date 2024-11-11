@@ -5,6 +5,7 @@ import { Nav } from './components/Nav/nav';
 import { LeaderboardPage } from './pages/Leaderboard/leaderboard';
 import { AccountLogin } from './pages/Account/Login/login';
 import { AccountRegister } from './pages/Account/Register/register';
+import { Typing } from './pages/games/Typing/Typing';
 import { Sequence } from './pages/games/Sequence/Sequence';
 
 export const App = () => {
@@ -17,6 +18,7 @@ export const App = () => {
         <Route path="/leaderboard" element={<LeaderboardPage />} />
         <Route path="/account/login" element={<AccountLogin />} />
         <Route path="/account/register" element={<AccountRegister />} />
+        <Route path="/typing" element={<Typing />} />
         <Route path="/sequence" element={<Sequence />} />
       </Routes>
     </BrowserRouter>
