@@ -5,35 +5,60 @@ using Microsoft.AspNetCore.Mvc;
 using backend.Services;
 using backend.Mappers;
 using backend.Interfaces;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 [ApiController]
 [Route("api/[controller]")]
 public class AccountController : ControllerBase
 {
     private readonly IAccountRepository _accountRepository;
+    private readonly ILogger<AccountController> _logger;
 
-    public AccountController(IAccountRepository accountRepository)
+    public AccountController(IAccountRepository accountRepository, ILogger<AccountController> logger)
     {
         _accountRepository = accountRepository;
+        _logger = logger;
     }
 
     [HttpGet]
     public async Task<ActionResult<List<AccountDTO>>> GetAccounts()
     {
-        var accountDTOs = await _accountRepository.GetAllAccounts();
-        return Ok(accountDTOs);
+        try
+        {
+            var accountDTOs = await _accountRepository.GetAllAccounts();
+            return Ok(accountDTOs);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while getting accounts.");
+            return BadRequest("An error occurred while processing your request.");
+        }
     }
 
     [HttpGet("{username}/{password}")]
     public async Task<ActionResult<AccountDTO>> GetAccount([FromRoute] string username, [FromRoute] string password)
     {
-        var accountDTO = await _accountRepository.GetAccountByUsername(username);
-        if (accountDTO == null || accountDTO.Password != password)
+        try
         {
-            return NotFound("Account not found with username: " + username + " and password: " + password);
-        }
+            var accountDTO = await _accountRepository.GetAccountByUsername(username);
+            if (accountDTO == null || accountDTO.Password != password)
+            {
+                return NotFound("Account not found with username: " + username + " and password: " + password);
+            }
 
-        return Ok(accountDTO);
+            return Ok(accountDTO);
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound("Account not found with username: " + username);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while getting account with username: {Username}", username);
+            return BadRequest("An error occurred while processing your request.");
+        }
     }
 
     [HttpPost]
@@ -50,12 +75,16 @@ public class AccountController : ControllerBase
 
         try
         {
-
             var existingAccount = await _accountRepository.GetAccountByUsername(newAccount.Username);
         }
         catch (KeyNotFoundException)
         {
             exists = false;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while checking if account exists with username: {Username}", newAccount.Username);
+            return BadRequest("An error occurred while processing your request.");
         }
 
         if (exists)
@@ -63,8 +92,16 @@ public class AccountController : ControllerBase
             return BadRequest("Account with the same username already exists.");
         }
 
-        await _accountRepository.AddAccount(newAccount.AccountToAccountDTO());
-        return CreatedAtAction(nameof(GetAccount), new { username = newAccount.Username, password = newAccount.Password }, newAccount.AccountToAccountDTO());
+        try
+        {
+            await _accountRepository.AddAccount(newAccount.AccountToAccountDTO());
+            return CreatedAtAction(nameof(GetAccount), new { username = newAccount.Username, password = newAccount.Password }, newAccount.AccountToAccountDTO());
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while adding account.");
+            return BadRequest("An error occurred while processing your request.");
+        }
     }
 
     [HttpPut("{username}")]
@@ -75,16 +112,47 @@ public class AccountController : ControllerBase
             return BadRequest("Account details cannot be empty.");
         }
 
-        var accountDTO = await _accountRepository.GetAccountByUsername(username);
-        if (accountDTO == null)
+        try
+        {
+            var accountDTO = await _accountRepository.GetAccountByUsername(username);
+            if (accountDTO == null)
+            {
+                return NotFound("Account not found with username: " + username);
+            }
+
+            accountDTO.Password = updatedAccountUpdateDTO.Password;
+            accountDTO.score = updatedAccountUpdateDTO.score;
+
+            await _accountRepository.UpdateAccount(accountDTO);
+            return Ok(accountDTO);
+        }
+        catch (KeyNotFoundException ex)
         {
             return NotFound("Account not found with username: " + username);
         }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while updating account with username: {Username}", username);
+            return BadRequest("An error occurred while processing your request.");
+        }
+    }
 
-        accountDTO.Password = updatedAccountUpdateDTO.Password;
-        accountDTO.score = updatedAccountUpdateDTO.score;
-
-        await _accountRepository.UpdateAccount(accountDTO);
-        return Ok(accountDTO);
+    [HttpDelete("{username}")]
+    public async Task<IActionResult> DeleteAccount([FromRoute] string username)
+    {
+        try
+        {
+            await _accountRepository.DeleteAccount(username);
+            return NoContent();
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound("Account not found with username: " + username);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while deleting account with username: {Username}", username);
+            return BadRequest("An error occurred while processing your request.");
+        }
     }
 }
