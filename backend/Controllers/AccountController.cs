@@ -4,79 +4,78 @@ using backend.DTOs.Account;
 using Microsoft.AspNetCore.Mvc;
 using backend.Services;
 using backend.Mappers;
-using backend.Data;
+using backend.Interfaces;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AccountController(AppDbContext context) : ControllerBase
+public class AccountController : ControllerBase
 {
-    private readonly AppDbContext _context = context;
+    private readonly IAccountRepository _accountRepository;
 
-    private static List<Account> accounts = new List<Account>();
-    private static List<AccountDTO> accountDTOs = new List<AccountDTO>();
+    public AccountController(IAccountRepository accountRepository)
+    {
+        _accountRepository = accountRepository;
+    }
 
     [HttpGet]
-    public ActionResult<List<AccountDTO>> GetAccounts()
+    public async Task<ActionResult<List<AccountDTO>>> GetAccounts()
     {
-
-        accountDTOs = _context.AccountDTOs.ToList();
+        var accountDTOs = await _accountRepository.GetAllAccounts();
         return Ok(accountDTOs);
     }
 
-
     [HttpGet("{username}/{password}")]
-    public ActionResult<AccountDTO> GetAccount([FromRoute] string username, [FromRoute] string password)
+    public async Task<ActionResult<AccountDTO>> GetAccount([FromRoute] string username, [FromRoute] string password)
     {
-        accountDTOs = _context.AccountDTOs.ToList();
-        AccountDTO accountDTO = accountDTOs.Find(accountDTO => accountDTO.Username == username);
-        if (accountDTO == null)
+        var accountDTO = await _accountRepository.GetAccountByUsername(username);
+        if (accountDTO == null || accountDTO.Password != password)
         {
-            return NotFound("Account not found with username :" + username + " and password: " + password);
-        }
-        if (accountDTO.Password != password)
-        {
-            return NotFound("Account not found with username :" + username + " and password: " + password);
+            return NotFound("Account not found with username: " + username + " and password: " + password);
         }
 
         return Ok(accountDTO);
     }
 
     [HttpPost]
-    public IActionResult AddAccount([FromBody] AccountCreateDTO newAccountCreateDTO)
+    public async Task<IActionResult> AddAccount([FromBody] AccountCreateDTO newAccountCreateDTO)
     {
         if (newAccountCreateDTO == null)
         {
             return BadRequest("Account details cannot be empty.");
         }
 
-        Account newAccount = newAccountCreateDTO.AccountCreateDTOToAccount();
+        var exists = true;
 
-        accountDTOs = _context.AccountDTOs.ToList();
-        accounts = accountDTOs.Select(accountDTO => accountDTO.AccountDTOToAccount()).ToList();
+        var newAccount = newAccountCreateDTO.AccountCreateDTOToAccount();
 
-        if (string.IsNullOrWhiteSpace(newAccount.Username) || string.IsNullOrWhiteSpace(newAccount.Password))
+        try
         {
-            return BadRequest("Account details cannot be empty.");
+
+            var existingAccount = await _accountRepository.GetAccountByUsername(newAccount.Username);
         }
-        else if (accounts.Any(account => newAccount.Equals(account)))
+        catch (KeyNotFoundException)
+        {
+            exists = false;
+        }
+
+        if (exists)
         {
             return BadRequest("Account with the same username already exists.");
         }
 
-        _context.AccountDTOs.Add(newAccount.AccountToAccountDTO());
-        _context.SaveChanges();
-        return CreatedAtAction(nameof(GetAccount), new { username = newAccount.Username }, newAccount.AccountToAccountDTO());
+        await _accountRepository.AddAccount(newAccount.AccountToAccountDTO());
+        return CreatedAtAction(nameof(GetAccount), new { username = newAccount.Username, password = newAccount.Password }, newAccount.AccountToAccountDTO());
     }
 
     [HttpPut("{username}")]
-    public IActionResult UpdateAccount([FromRoute] string username, [FromBody] AccountUpdateDTO updatedAccountUpdateDTO)
+    public async Task<IActionResult> UpdateAccount([FromRoute] string username, [FromBody] AccountUpdateDTO updatedAccountUpdateDTO)
     {
         if (updatedAccountUpdateDTO == null)
         {
             return BadRequest("Account details cannot be empty.");
         }
 
-        var accountDTO = _context.AccountDTOs.FirstOrDefault(a => a.Username == username);
+        var accountDTO = await _accountRepository.GetAccountByUsername(username);
         if (accountDTO == null)
         {
             return NotFound("Account not found with username: " + username);
@@ -85,11 +84,7 @@ public class AccountController(AppDbContext context) : ControllerBase
         accountDTO.Password = updatedAccountUpdateDTO.Password;
         accountDTO.score = updatedAccountUpdateDTO.score;
 
-        _context.AccountDTOs.Update(accountDTO);
-        _context.SaveChanges();
-
+        await _accountRepository.UpdateAccount(accountDTO);
         return Ok(accountDTO);
     }
-
-
 }
