@@ -33,15 +33,22 @@ public class AppDbContext : DbContext
             {
                 Id = 1,
                 Name = "Melon Ninja",
-                Description = "Slice as many Melons as possible",
+                Description = "Slice as many Melons as possible.",
                 Route = "/melonNinja"
             },
             new Game
             {
                 Id = 2,
                 Name = "Sequence",
-                Description = "Remember the sequence and repeat it",
+                Description = "Remember the sequence and repeat it.",
                 Route = "/sequence"
+            },
+            new Game
+            {
+                Id = 3,
+                Name = "Typing",
+                Description = "Type the text fast and correct.",
+                Route = "/typing"
             }
         );
     }
