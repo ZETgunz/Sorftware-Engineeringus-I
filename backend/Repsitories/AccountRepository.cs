@@ -3,6 +3,7 @@ using backend.DTOs.Account;
 using backend.Interfaces;
 using backend.Data;
 using backend.Mappers;
+using backend.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +30,7 @@ namespace backend.Repositories
             var account = await _context.AccountDTOs.FirstOrDefaultAsync(a => a.Username == username);
             if (account == null)
             {
-                throw new KeyNotFoundException("Account not found with username: " + username);
+                throw new AccountNotFoundException("Account not found with username: " + username);
             }
             return account;
         }
@@ -46,7 +47,7 @@ namespace backend.Repositories
             var existingAccount = await _context.AccountDTOs.FirstOrDefaultAsync(a => a.Username == accountDTO.Username);
             if (existingAccount == null)
             {
-                throw new KeyNotFoundException("Account not found with username: " + accountDTO.Username);
+                throw new AccountNotFoundException("Account not found with username: " + accountDTO.Username);
             }
 
             existingAccount.Password = accountDTO.Password;
@@ -62,7 +63,7 @@ namespace backend.Repositories
             var account = await _context.AccountDTOs.FirstOrDefaultAsync(a => a.Username == username);
             if (account == null)
             {
-                throw new KeyNotFoundException("Account not found with username: " + username);
+                throw new AccountNotFoundException("Account not found with username: " + username);
             }
 
             _context.AccountDTOs.Remove(account);

@@ -62,7 +62,7 @@ public class AccountController : ControllerBase
             _logger.LogWarning(ex, "Invalid credentials for username: {Username}", username);
             return BadRequest(ex.Message);
         }
-        catch (KeyNotFoundException)
+        catch (AccountNotFoundException)
         {
             _logger.LogWarning("Account not found with username: {Username}", username);
             return NotFound("Account not found with username: " + username);
@@ -101,7 +101,7 @@ public class AccountController : ControllerBase
         {
             var existingAccount = await _accountRepository.GetAccountByUsername(newAccount.Username);
         }
-        catch (KeyNotFoundException)
+        catch (AccountNotFoundException)
         {
             exists = false;
         }
@@ -160,7 +160,7 @@ public class AccountController : ControllerBase
             _logger.LogWarning(ex, "Invalid credentials for updating account with username: {Username}", username);
             return BadRequest(ex.Message);
         }
-        catch (KeyNotFoundException)
+        catch (AccountNotFoundException)
         {
             _logger.LogWarning("Account not found with username: {Username}", username);
             return NotFound("Account not found with username: " + username);
@@ -187,7 +187,7 @@ public class AccountController : ControllerBase
             _logger.LogWarning(ex, "Invalid credentials for deleting account with username: {Username}", username);
             return BadRequest(ex.Message);
         }
-        catch (KeyNotFoundException)
+        catch (AccountNotFoundException)
         {
             _logger.LogWarning("Account not found with username: {Username}", username);
             return NotFound("Account not found with username: " + username);
