@@ -12,7 +12,7 @@ namespace backend.Controllers
         [HttpGet]
         public ActionResult GetText()
         {
-            String text = "";
+            string text = "test melons please ignore";
             return Ok(text);
         }
     }
