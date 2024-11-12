@@ -8,10 +8,10 @@ export const Textbox: React.FC = () => {
 
     const playGame = async () => {
         setIsPlaying(true);
-        await fetchCell();
+        await fetchText();
     };
 
-    const fetchCell = async () => {
+    const fetchText = async () => {
         try {
             const response = await fetch('http://localhost:5071/api/Typing/');
             if (!response.ok) {
