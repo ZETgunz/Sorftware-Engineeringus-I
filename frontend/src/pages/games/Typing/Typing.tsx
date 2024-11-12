@@ -4,7 +4,7 @@ import "./Typing.css";
 export const Typing = () => {
 
     return (
-        <div className="sequence-container">
+        <div className="typing-container">
             <Textbox />
         </div>
     );
