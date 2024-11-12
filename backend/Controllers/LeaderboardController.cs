@@ -1,51 +1,42 @@
-using backend.Models;
 using backend.DTOs.Account;
 using backend.DTOs.Leaderboard;
+using backend.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using backend.Mappers;
-using backend.Services;
-using backend.Data;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class LeaderboardController(AppDbContext context) : ControllerBase
+    public class LeaderboardController : ControllerBase
     {
-        private readonly AppDbContext _context = context;
-        private static List<Account> accounts = new List<Account>();
+        private readonly ILeaderboardRepository _leaderboardRepository;
 
-        private static List<LeaderboardAccountDTO> leaderboard = new List<LeaderboardAccountDTO>();
+        public LeaderboardController(ILeaderboardRepository leaderboardRepository)
+        {
+            _leaderboardRepository = leaderboardRepository;
+        }
 
         [HttpGet]
-        public ActionResult<IEnumerable<LeaderboardAccountDTO>> GetLeaderboard()
+        public async Task<ActionResult<IEnumerable<LeaderboardAccountDTO>>> GetLeaderboard()
         {
-            accounts.Clear();
-            foreach (AccountDTO accountDTO in _context.AccountDTOs.ToList())
-            {
-                accounts.Add(accountDTO.AccountDTOToAccount());
-            }
-            accounts.Sort();
-            leaderboard = accounts.Select(account => account.AccountToLeaderboardAccountDTO(accounts.IndexOf(account) + 1)).ToList();
+            var leaderboard = await _leaderboardRepository.GetLeaderboard();
             return Ok(leaderboard);
         }
 
         [HttpGet("{username}")]
-        public ActionResult<AccountDTO> GetAccountPlace([FromRoute] string username)
+        public async Task<ActionResult<LeaderboardAccountDTO>> GetAccountPlace([FromRoute] string username)
         {
-            accounts.Clear();
-            foreach (AccountDTO accountDTO in _context.AccountDTOs.ToList())
+            try
             {
-                accounts.Add(accountDTO.AccountDTOToAccount());
+                var accountPlace = await _leaderboardRepository.GetAccountPlace(username);
+                return Ok(accountPlace);
             }
-            accounts.Sort();
-            Account account = accounts.Find(account => account.Username == username);
-            if (account == null)
+            catch (KeyNotFoundException ex)
             {
-                return NotFound("Account not found with username :" + username);
+                return NotFound(ex.Message);
             }
-            return Ok(account.AccountToLeaderboardAccountDTO(accounts.IndexOf(account) + 1));
-
         }
     }
 }

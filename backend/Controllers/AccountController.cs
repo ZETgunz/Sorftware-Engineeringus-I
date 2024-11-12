@@ -4,92 +4,198 @@ using backend.DTOs.Account;
 using Microsoft.AspNetCore.Mvc;
 using backend.Services;
 using backend.Mappers;
-using backend.Data;
+using backend.Interfaces;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using backend.Exceptions;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AccountController(AppDbContext context) : ControllerBase
+public class AccountController : ControllerBase
 {
-    private readonly AppDbContext _context = context;
+    private readonly IAccountRepository _accountRepository;
+    private readonly ILogger<AccountController> _logger;
+    private readonly IAccountCredentialsCheck _credentialsCheck;
 
-    private static List<Account> accounts = new List<Account>();
-    private static List<AccountDTO> accountDTOs = new List<AccountDTO>();
-
-    [HttpGet]
-    public ActionResult<List<AccountDTO>> GetAccounts()
+    public AccountController(IAccountRepository accountRepository, ILogger<AccountController> logger, IAccountCredentialsCheck credentialsCheck)
     {
-
-        accountDTOs = _context.AccountDTOs.ToList();
-        return Ok(accountDTOs);
+        _accountRepository = accountRepository;
+        _logger = logger;
+        _credentialsCheck = credentialsCheck;
     }
 
+    [HttpGet]
+    public async Task<ActionResult<List<AccountDTO>>> GetAccounts()
+    {
+        try
+        {
+            var accountDTOs = await _accountRepository.GetAllAccounts();
+            return Ok(accountDTOs);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while getting accounts.");
+            return BadRequest("An error occurred while processing your request.");
+        }
+    }
 
     [HttpGet("{username}/{password}")]
-    public ActionResult<AccountDTO> GetAccount([FromRoute] string username, [FromRoute] string password)
+    public async Task<ActionResult<AccountDTO>> GetAccount([FromRoute] string username, [FromRoute] string password)
     {
-        accountDTOs = _context.AccountDTOs.ToList();
-        AccountDTO accountDTO = accountDTOs.Find(accountDTO => accountDTO.Username == username);
-        if (accountDTO == null)
+        try
         {
-            return NotFound("Account not found with username :" + username + " and password: " + password);
-        }
-        if (accountDTO.Password != password)
-        {
-            return NotFound("Account not found with username :" + username + " and password: " + password);
-        }
+            _credentialsCheck.IsUsernameValid(username);
+            _credentialsCheck.IsPasswordValid(password);
 
-        return Ok(accountDTO);
+            var accountDTO = await _accountRepository.GetAccountByUsername(username);
+            if (accountDTO == null || accountDTO.Password != password)
+            {
+                _logger.LogWarning("Account not found with username: {Username} and password: {Password}", username, password);
+                return NotFound("Account not found with username: " + username + " and password: " + password);
+            }
+
+            return Ok(accountDTO);
+        }
+        catch (InvalidCredentialsException ex)
+        {
+            _logger.LogWarning(ex, "Invalid credentials for username: {Username}", username);
+            return BadRequest(ex.Message);
+        }
+        catch (AccountNotFoundException)
+        {
+            _logger.LogWarning("Account not found with username: {Username}", username);
+            return NotFound("Account not found with username: " + username);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while getting account with username: {Username}", username);
+            return BadRequest("An error occurred while processing your request.");
+        }
     }
 
     [HttpPost]
-    public IActionResult AddAccount([FromBody] AccountCreateDTO newAccountCreateDTO)
+    public async Task<IActionResult> AddAccount([FromBody] AccountCreateDTO newAccountCreateDTO)
     {
         if (newAccountCreateDTO == null)
         {
             return BadRequest("Account details cannot be empty.");
         }
 
-        Account newAccount = newAccountCreateDTO.AccountCreateDTOToAccount();
-
-        accountDTOs = _context.AccountDTOs.ToList();
-        accounts = accountDTOs.Select(accountDTO => accountDTO.AccountDTOToAccount()).ToList();
-
-        if (string.IsNullOrWhiteSpace(newAccount.Username) || string.IsNullOrWhiteSpace(newAccount.Password))
+        try
         {
-            return BadRequest("Account details cannot be empty.");
+            _credentialsCheck.IsUsernameValid(newAccountCreateDTO.Username);
+            _credentialsCheck.IsPasswordValid(newAccountCreateDTO.Password);
         }
-        else if (accounts.Any(account => newAccount.Equals(account)))
+        catch (InvalidCredentialsException ex)
         {
+            _logger.LogWarning(ex, "Invalid credentials for new account with username: {Username}", newAccountCreateDTO.Username);
+            return BadRequest(ex.Message);
+        }
+
+        var exists = true;
+
+        var newAccount = newAccountCreateDTO.AccountCreateDTOToAccount();
+
+        try
+        {
+            var existingAccount = await _accountRepository.GetAccountByUsername(newAccount.Username);
+        }
+        catch (AccountNotFoundException)
+        {
+            exists = false;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while checking if account exists with username: {Username}", newAccount.Username);
+            return BadRequest("An error occurred while processing your request.");
+        }
+
+        if (exists)
+        {
+            _logger.LogWarning("Account with username: {Username} already exists.", newAccount.Username);
             return BadRequest("Account with the same username already exists.");
         }
 
-        _context.AccountDTOs.Add(newAccount.AccountToAccountDTO());
-        _context.SaveChanges();
-        return CreatedAtAction(nameof(GetAccount), new { username = newAccount.Username }, newAccount.AccountToAccountDTO());
+        try
+        {
+            await _accountRepository.AddAccount(newAccount.AccountToAccountDTO());
+            return CreatedAtAction(nameof(GetAccount), new { username = newAccount.Username, password = newAccount.Password }, newAccount.AccountToAccountDTO());
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while adding account.");
+            return BadRequest("An error occurred while processing your request.");
+        }
     }
 
     [HttpPut("{username}")]
-    public IActionResult UpdateAccount([FromRoute] string username, [FromBody] AccountUpdateDTO updatedAccountUpdateDTO)
+    public async Task<IActionResult> UpdateAccount([FromRoute] string username, [FromBody] AccountUpdateDTO updatedAccountUpdateDTO)
     {
         if (updatedAccountUpdateDTO == null)
         {
             return BadRequest("Account details cannot be empty.");
         }
 
-        var accountDTO = _context.AccountDTOs.FirstOrDefault(a => a.Username == username);
-        if (accountDTO == null)
+        try
         {
+            _credentialsCheck.IsUsernameValid(username);
+            _credentialsCheck.IsPasswordValid(updatedAccountUpdateDTO.Password);
+
+            var accountDTO = await _accountRepository.GetAccountByUsername(username);
+            if (accountDTO == null)
+            {
+                _logger.LogWarning("Account not found with username: {Username}", username);
+                return NotFound("Account not found with username: " + username);
+            }
+
+            accountDTO.Password = updatedAccountUpdateDTO.Password;
+            accountDTO.score = updatedAccountUpdateDTO.score;
+
+            await _accountRepository.UpdateAccount(accountDTO);
+            return Ok(accountDTO);
+        }
+        catch (InvalidCredentialsException ex)
+        {
+            _logger.LogWarning(ex, "Invalid credentials for updating account with username: {Username}", username);
+            return BadRequest(ex.Message);
+        }
+        catch (AccountNotFoundException)
+        {
+            _logger.LogWarning("Account not found with username: {Username}", username);
             return NotFound("Account not found with username: " + username);
         }
-
-        accountDTO.Password = updatedAccountUpdateDTO.Password;
-        accountDTO.score = updatedAccountUpdateDTO.score;
-
-        _context.AccountDTOs.Update(accountDTO);
-        _context.SaveChanges();
-
-        return Ok(accountDTO);
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while updating account with username: {Username}", username);
+            return BadRequest("An error occurred while processing your request.");
+        }
     }
 
+    [HttpDelete("{username}")]
+    public async Task<IActionResult> DeleteAccount([FromRoute] string username)
+    {
+        try
+        {
+            _credentialsCheck.IsUsernameValid(username);
 
+            await _accountRepository.DeleteAccount(username);
+            return NoContent();
+        }
+        catch (InvalidCredentialsException ex)
+        {
+            _logger.LogWarning(ex, "Invalid credentials for deleting account with username: {Username}", username);
+            return BadRequest(ex.Message);
+        }
+        catch (AccountNotFoundException)
+        {
+            _logger.LogWarning("Account not found with username: {Username}", username);
+            return NotFound("Account not found with username: " + username);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while deleting account with username: {Username}", username);
+            return BadRequest("An error occurred while processing your request.");
+        }
+    }
 }
