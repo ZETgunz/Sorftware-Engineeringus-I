@@ -39,6 +39,7 @@ export const Textbox: React.FC = () => {
                 score+=scoreRate;
             }
         }
+        score=Math.round(score);
         setText("");
         (document.getElementById("typing") as HTMLInputElement).value="";
         alert("Your score is "+score+"!");
