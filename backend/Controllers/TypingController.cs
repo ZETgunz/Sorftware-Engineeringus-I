@@ -10,9 +10,9 @@ namespace backend.Controllers
         private static readonly Random rand = new Random();
 
         [HttpGet]
-        public ActionResult GetText()
+        public ActionResult<String> GetText()
         {
-            string text = "test melons please ignore";
+            String text = "test melons please ignore";
             return Ok(text);
         }
     }
