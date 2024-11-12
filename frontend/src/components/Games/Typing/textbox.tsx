@@ -22,12 +22,23 @@ export const Textbox: React.FC = () => {
             console.log(data);
             return data;
         } catch (error) {
-            console.error('Error fetching cell:', error);
+            console.error('Error fetching text:', error);
         }
     };
 
     const finish = () => {
         setIsPlaying(false);
+        setTyping("WIP");//work in progress
+        const arrText = text.split('');
+        const arrTyping = typing.split('');
+        var score = 0;
+        const scoreMax = 1000;
+        const scoreRate = text.length/scoreMax;
+        for(var i=0; i<arrText.length; i++){
+            if(arrTyping[i]==arrText[i]){
+                score+=scoreRate;
+            }
+        }
     }
 
     return (
