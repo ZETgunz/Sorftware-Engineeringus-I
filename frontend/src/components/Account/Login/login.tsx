@@ -32,7 +32,7 @@ export const Login: React.FC = () => {
     }
 
     const logOut = () => {
-        localStorage.removeItem('username');
+        localStorage.removeItem('username')
         localStorage.removeItem('password');
         localStorage.removeItem('score');
         localStorage.removeItem('role');

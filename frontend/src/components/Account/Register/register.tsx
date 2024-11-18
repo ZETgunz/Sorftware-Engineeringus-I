@@ -23,7 +23,9 @@ export const Register: React.FC = () => {
                 }),
             });
             if (!response.ok) {
-                throw new Error(`Error: ${response.statusText}`);
+                var data = await response.text();
+                alert(data);
+                return;
             }
             alert("Account succesfully created!");
             return;
