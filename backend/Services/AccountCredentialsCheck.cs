@@ -14,29 +14,24 @@ namespace backend.Services
                 throw new InvalidCredentialsException("Password cannot be null or empty.");
             }
 
+            var passwordRequirements = new (string pattern, string errorMessage)[]
+            {
+                (@"[A-Z]", "Password must contain at least one uppercase letter."),
+                (@"[a-z]", "Password must contain at least one lowercase letter."),
+                (@"\d", "Password must contain at least one digit."),
+            };
+
             if (password.Length < 8)
             {
                 throw new InvalidCredentialsException("Password must be at least 8 characters long.");
             }
 
-            if (!Regex.IsMatch(password, @"[A-Z]"))
+            foreach (var (pattern, errorMessage) in passwordRequirements)
             {
-                throw new InvalidCredentialsException("Password must contain at least one uppercase letter.");
-            }
-
-            if (!Regex.IsMatch(password, @"[a-z]"))
-            {
-                throw new InvalidCredentialsException("Password must contain at least one lowercase letter.");
-            }
-
-            if (!Regex.IsMatch(password, @"\d"))
-            {
-                throw new InvalidCredentialsException("Password must contain at least one digit.");
-            }
-
-            if (!Regex.IsMatch(password, @"[\W_]"))
-            {
-                throw new InvalidCredentialsException("Password must contain at least one special character.");
+                if (!Regex.IsMatch(password, pattern))
+                {
+                    throw new InvalidCredentialsException(errorMessage);
+                }
             }
 
             return true;

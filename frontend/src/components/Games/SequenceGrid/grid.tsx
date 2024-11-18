@@ -40,6 +40,25 @@ export const Grid: React.FC = () => {
     };
 
     const gameOver = () => {
+        alert(`Game Over! You reached level ${level}`);
+        const storedScore = localStorage.getItem('score');
+        if (storedScore === null || level > parseInt(storedScore || '0')) {
+            localStorage.setItem('score', level.toString());
+            return;
+        }
+        if(localStorage.getItem('username') != null){
+            const username = localStorage.getItem('username');
+            const password = localStorage.getItem('password');
+            const score = localStorage.getItem('score');
+            const data = {password, score};
+            fetch('http://localhost:5071/api/Account/' + username, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+        }
         setLevel(0);
         return;
     };
