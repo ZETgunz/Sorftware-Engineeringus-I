@@ -16,13 +16,12 @@ public class AccountController : ControllerBase
 {
     private readonly IAccountRepository _accountRepository;
     private readonly ILogger<AccountController> _logger;
-    private readonly IAccountCredentialsCheck _credentialsCheck;
-
-    public AccountController(IAccountRepository accountRepository, ILogger<AccountController> logger, IAccountCredentialsCheck credentialsCheck)
+    private readonly Validator<Account> _accountValidator;
+    public AccountController(IAccountRepository accountRepository, ILogger<AccountController> logger, Validator<Account> accountValidator)
     {
         _accountRepository = accountRepository;
         _logger = logger;
-        _credentialsCheck = credentialsCheck;
+        _accountValidator = accountValidator;
     }
 
     [HttpGet]
@@ -45,8 +44,7 @@ public class AccountController : ControllerBase
     {
         try
         {
-            _credentialsCheck.IsUsernameValid(username);
-            _credentialsCheck.IsPasswordValid(password);
+            _accountValidator.Validate(new Account(username, password));
 
             var accountDTO = await _accountRepository.GetAccountByUsername(username);
             if (accountDTO == null || accountDTO.Password != password)
@@ -84,8 +82,7 @@ public class AccountController : ControllerBase
 
         try
         {
-            _credentialsCheck.IsUsernameValid(newAccountCreateDTO.Username);
-            _credentialsCheck.IsPasswordValid(newAccountCreateDTO.Password);
+            _accountValidator.Validate(new Account(newAccountCreateDTO.Username, newAccountCreateDTO.Password));
         }
         catch (InvalidCredentialsException ex)
         {
@@ -139,8 +136,7 @@ public class AccountController : ControllerBase
 
         try
         {
-            _credentialsCheck.IsUsernameValid(username);
-            _credentialsCheck.IsPasswordValid(updatedAccountUpdateDTO.Password);
+            _accountValidator.Validate(new Account(username, updatedAccountUpdateDTO.Password));
 
             var accountDTO = await _accountRepository.GetAccountByUsername(username);
             if (accountDTO == null)
@@ -177,15 +173,9 @@ public class AccountController : ControllerBase
     {
         try
         {
-            _credentialsCheck.IsUsernameValid(username);
 
             await _accountRepository.DeleteAccount(username);
             return NoContent();
-        }
-        catch (InvalidCredentialsException ex)
-        {
-            _logger.LogWarning(ex, "Invalid credentials for deleting account with username: {Username}", username);
-            return BadRequest(ex.Message);
         }
         catch (AccountNotFoundException)
         {

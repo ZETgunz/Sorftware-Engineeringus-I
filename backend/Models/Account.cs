@@ -1,9 +1,10 @@
 using backend.Models;
+using backend.Interfaces;
 using backend.Enums;
 using System;
 namespace backend.Models
 {
-    public class Account : IComparable<Account>, IEquatable<Account>
+    public class Account : IComparable<Account>, IEquatable<Account>, IValidatable
     {
 
 
@@ -27,6 +28,10 @@ namespace backend.Models
         public bool Equals(Account other)
         {
             return this.Username == other.Username;
+        }
+        public bool IsValid()
+        {
+            return !string.IsNullOrEmpty(Username) && !string.IsNullOrEmpty(Password);
         }
     }
 }
