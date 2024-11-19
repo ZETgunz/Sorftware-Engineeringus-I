@@ -34,6 +34,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
+builder.Services.AddSingleton<SessionManager>();
+builder.Services.AddHostedService<SessionCleanupService>();
+
 // add database context
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
