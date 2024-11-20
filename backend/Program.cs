@@ -34,6 +34,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
+builder.Services.AddSingleton<SessionManager>();
+builder.Services.AddHostedService<SessionCleanupService>();
+
+builder.Services.AddScoped<Validator<Account>, AccountValidator>();
+builder.Services.AddScoped<Validator<Game>, GameValidator>();
+
 // add database context
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -42,9 +48,6 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IGameRepository, GameRepository>();
 builder.Services.AddScoped<ILeaderboardRepository, LeaderboardRepository>();
-
-// Add AccountCredentialsCheck service
-builder.Services.AddScoped<IAccountCredentialsCheck, AccountCredentialsCheck>();
 
 var app = builder.Build();
 
