@@ -13,7 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
-    .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Minute, restrictedToMinimumLevel: LogEventLevel.Warning)
+    .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Hour, restrictedToMinimumLevel: LogEventLevel.Warning)
     .CreateLogger();
 
 builder.Host.UseSerilog();
