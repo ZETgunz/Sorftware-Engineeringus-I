@@ -1,6 +1,7 @@
 using backend.Models;
 using Microsoft.AspNetCore.Mvc;
 using backend.Interfaces;
+using backend.Services;
 using backend.Models;
 
 namespace API.Controllers
@@ -10,10 +11,14 @@ namespace API.Controllers
     public class GamesController : ControllerBase
     {
         private readonly IGameRepository _gameRepository;
+        private readonly ILogger<GamesController> _logger;
+        private readonly Validator<Game> _gameValidator;
 
-        public GamesController(IGameRepository gameRepository)
+        public GamesController(IGameRepository gameRepository, ILogger<GamesController> logger, Validator<Game> gameValidator)
         {
             _gameRepository = gameRepository;
+            _logger = logger;
+            _gameValidator = gameValidator;
         }
 
         [HttpGet]
@@ -37,6 +42,7 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult<Game>> AddGame(Game game)
         {
+            _gameValidator.Validate(game);
             await _gameRepository.AddGame(game);
             return CreatedAtAction(nameof(GetGame), new { id = game.Id }, game);
         }
