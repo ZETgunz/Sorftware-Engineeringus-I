@@ -40,18 +40,19 @@ export const Grid: React.FC = () => {
     const gameOver = () => {
         cellsToActivate.length = 0;
         setIsPlaying(false);
+        var storedScore = localStorage.getItem('score'); 
         var score = (level-1)*150;
         alert("You score is "+score+"!");
       
-        if (storedScore === null || level > parseInt(storedScore || '0')) {
-            localStorage.setItem('score', level.toString());
+        if (storedScore === null || score > parseInt(storedScore || '0')) {
+            localStorage.setItem('score', score.toString());
             return;
         }
         if(localStorage.getItem('username') != null){
             const username = localStorage.getItem('username');
             const password = localStorage.getItem('password');
-            const score = localStorage.getItem('score');
-            const data = {password, score};
+            const scoreUpdate = parseInt(localStorage.getItem('score') || '0');
+            const data = {password, score: scoreUpdate};
             fetch('http://localhost:5071/api/Account/' + username, {
                 method: 'PUT',
                 headers: {
@@ -61,6 +62,7 @@ export const Grid: React.FC = () => {
             });
         setLevel(0);
         return;
+    };
     };
 
     const fetchCell = async () => {
@@ -120,4 +122,4 @@ export const Grid: React.FC = () => {
             <button onClick={() => playGame()} className={isPlaying ? 'disabled' : 'active'}>Start</button>
         </div >
     );
-};
+}
