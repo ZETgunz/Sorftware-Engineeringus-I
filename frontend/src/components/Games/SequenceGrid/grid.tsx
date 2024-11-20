@@ -33,15 +33,16 @@ export const Grid: React.FC = () => {
             setWrongClick({ row: rowIndex, column: colIndex });
             setClick(0);
             gameOver();
-            cellsToActivate.length = 0;
-            setIsPlaying(false);
         }
 
     };
 
     const gameOver = () => {
-        alert(`Game Over! You reached level ${level}`);
-        const storedScore = localStorage.getItem('score');
+        cellsToActivate.length = 0;
+        setIsPlaying(false);
+        var score = (level-1)*150;
+        alert("You score is "+score+"!");
+      
         if (storedScore === null || level > parseInt(storedScore || '0')) {
             localStorage.setItem('score', level.toString());
             return;
@@ -58,7 +59,6 @@ export const Grid: React.FC = () => {
                 },
                 body: JSON.stringify(data)
             });
-        }
         setLevel(0);
         return;
     };
@@ -78,8 +78,6 @@ export const Grid: React.FC = () => {
             console.error('Error fetching cell:', error);
         }
     };
-
-
 
     const playGame = async () => {
         setLevel(level+1);
