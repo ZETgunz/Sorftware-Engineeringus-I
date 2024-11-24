@@ -4,7 +4,7 @@ using backend.Interfaces;
 using backend.Services;
 using backend.Models;
 
-namespace API.Controllers
+namespace backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
