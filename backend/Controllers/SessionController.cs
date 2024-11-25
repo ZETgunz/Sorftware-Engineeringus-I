@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using backend.Models;
 using backend.Services;
+using backend.Interfaces;
 
 namespace backend.Controllers
 {
@@ -8,9 +9,9 @@ namespace backend.Controllers
     [Route("api/[controller]")]
     public class SessionController : ControllerBase
     {
-        private readonly SessionManager _sessionManager;
+        private readonly ISessionManager _sessionManager;
 
-        public SessionController(SessionManager sessionManager)
+        public SessionController(ISessionManager sessionManager)
         {
             _sessionManager = sessionManager;
         }

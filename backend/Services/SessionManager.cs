@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Concurrent;
 using backend.Models;
+using backend.Interfaces;
 
-public class SessionManager
+namespace backend.Services;
+
+public class SessionManager : ISessionManager
 {
     private readonly ConcurrentDictionary<string, UserSession> _sessions = new();
     private readonly TimeSpan _sessionTimeout = TimeSpan.FromMinutes(60);

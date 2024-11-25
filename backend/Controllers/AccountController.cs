@@ -19,8 +19,8 @@ namespace backend.Controllers
     {
         private readonly IAccountRepository _accountRepository;
         private readonly ILogger<AccountController> _logger;
-        private readonly Validator<Account> _accountValidator;
-        public AccountController(IAccountRepository accountRepository, ILogger<AccountController> logger, Validator<Account> accountValidator)
+        private readonly IValidator<Account> _accountValidator;
+        public AccountController(IAccountRepository accountRepository, ILogger<AccountController> logger, IValidator<Account> accountValidator)
         {
             _accountRepository = accountRepository;
             _logger = logger;
