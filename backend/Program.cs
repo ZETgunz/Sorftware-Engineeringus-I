@@ -37,8 +37,6 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<SessionManager>();
 builder.Services.AddHostedService<SessionCleanupService>();
 
-builder.Services.AddScoped<Validator<Account>, AccountValidator>();
-builder.Services.AddScoped<Validator<Game>, GameValidator>();
 
 // add database context
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -48,6 +46,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IGameRepository, GameRepository>();
 builder.Services.AddScoped<ILeaderboardRepository, LeaderboardRepository>();
+builder.Services.AddScoped<IValidator<Account>, Validator<Account>>();
+builder.Services.AddScoped<IValidator<Game>, Validator<Game>>();
+builder.Services.AddScoped<ISessionManager, SessionManager>();
 
 var app = builder.Build();
 
@@ -65,3 +66,4 @@ app.MapControllers();
 
 app.Run();
 
+public partial class Program { }

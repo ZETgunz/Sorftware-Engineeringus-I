@@ -1,6 +1,9 @@
 using backend.Models;
 using backend.Services;
 using System.Text.RegularExpressions;
+
+namespace backend.Services;
+
 public class AccountValidator : Validator<Account>
 {
     public AccountValidator()

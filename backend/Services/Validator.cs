@@ -2,10 +2,11 @@ using backend.Models;
 using backend.Interfaces;
 using backend.Exceptions;
 using System;
+using System.Collections.Generic;
 
 namespace backend.Services
 {
-    public class Validator<T>
+    public class Validator<T> : IValidator<T>
         where T : class, IValidatable
     {
         private readonly List<ValidationRule<T>> _rules = new();

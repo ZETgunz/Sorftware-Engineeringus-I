@@ -2,6 +2,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 
+namespace backend.Services;
+
 public class SessionCleanupService : BackgroundService
 {
     private readonly SessionManager _sessionManager;

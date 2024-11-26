@@ -4,7 +4,7 @@ using backend.Interfaces;
 using backend.Services;
 using backend.Models;
 
-namespace API.Controllers
+namespace backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -12,9 +12,9 @@ namespace API.Controllers
     {
         private readonly IGameRepository _gameRepository;
         private readonly ILogger<GamesController> _logger;
-        private readonly Validator<Game> _gameValidator;
+        private readonly IValidator<Game> _gameValidator;
 
-        public GamesController(IGameRepository gameRepository, ILogger<GamesController> logger, Validator<Game> gameValidator)
+        public GamesController(IGameRepository gameRepository, ILogger<GamesController> logger, IValidator<Game> gameValidator)
         {
             _gameRepository = gameRepository;
             _logger = logger;

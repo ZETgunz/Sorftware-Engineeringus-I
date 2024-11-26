@@ -48,6 +48,8 @@ Melon_Benchmarks/obj
 [Tt]est[Rr]esult*/
 [Bb]uild[Ll]og.*
 
+CoverageReport/
+
 # NUnit
 *.VisualState.xml
 TestResult.xml
