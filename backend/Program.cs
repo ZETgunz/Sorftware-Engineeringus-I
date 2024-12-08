@@ -25,7 +25,8 @@ builder.Services.AddCors(options =>
         {
             policy.WithOrigins("http://localhost:5173")
                   .AllowAnyHeader()
-                  .AllowAnyMethod();
+                  .AllowAnyMethod()
+                  .AllowCredentials();
         });
 });
 
@@ -48,7 +49,6 @@ builder.Services.AddScoped<IGameRepository, GameRepository>();
 builder.Services.AddScoped<ILeaderboardRepository, LeaderboardRepository>();
 builder.Services.AddScoped<IValidator<Account>, Validator<Account>>();
 builder.Services.AddScoped<IValidator<Game>, Validator<Game>>();
-builder.Services.AddScoped<ISessionManager, SessionManager>();
 
 var app = builder.Build();
 

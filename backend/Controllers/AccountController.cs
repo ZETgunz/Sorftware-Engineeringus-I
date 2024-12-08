@@ -41,39 +41,44 @@ namespace backend.Controllers
                 return BadRequest("An error occurred while processing your request.");
             }
         }
-
-        [HttpGet("{username}/{password}")]
-        public async Task<ActionResult<AccountDTO>> GetAccount([FromRoute] string username, [FromRoute] string password)
+        [HttpPost("getAccount")]
+        public async Task<IActionResult> GetAccount([FromBody] AccountLoginDTO accountLoginDTO)
         {
+            if (accountLoginDTO == null)
+            {
+                return BadRequest("Account login details cannot be empty.");
+            }
+
             try
             {
-                _accountValidator.Validate(new Account(username, password));
+                _accountValidator.Validate(new Account(accountLoginDTO.Username, accountLoginDTO.Password));
 
-                var accountDTO = await _accountRepository.GetAccountByUsername(username);
-                if (accountDTO == null || accountDTO.Password != password)
+                var accountDTO = await _accountRepository.GetAccountByUsername(accountLoginDTO.Username);
+                if (accountDTO == null || accountDTO.Password != accountLoginDTO.Password)
                 {
-                    _logger.LogWarning("Account not found with username: {Username} and password: {Password}", username, password);
-                    return NotFound("Account not found with username: " + username + " and password: " + password);
+                    _logger.LogWarning("Account not found with username: {Username} and password: {Password}", accountLoginDTO.Username, accountLoginDTO.Password);
+                    return NotFound("Account not found with username: " + accountLoginDTO.Username);
                 }
 
                 return Ok(accountDTO);
             }
             catch (InvalidCredentialsException ex)
             {
-                _logger.LogWarning(ex, "Invalid credentials for username: {Username}", username);
+                _logger.LogWarning(ex, "Invalid credentials for account with username: {Username}", accountLoginDTO.Username);
                 return BadRequest(ex.Message);
             }
             catch (AccountNotFoundException)
             {
-                _logger.LogWarning("Account not found with username: {Username}", username);
-                return NotFound("Account not found with username: " + username);
+                _logger.LogWarning("Account not found with username: {Username}", accountLoginDTO.Username);
+                return NotFound("Account not found with username: " + accountLoginDTO.Username);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while getting account with username: {Username}", username);
+                _logger.LogError(ex, "Error occurred while getting account with username: {Username}", accountLoginDTO.Username);
                 return BadRequest("An error occurred while processing your request.");
             }
         }
+
 
         [HttpPost]
         public async Task<IActionResult> AddAccount([FromBody] AccountCreateDTO newAccountCreateDTO)
