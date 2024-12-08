@@ -45,10 +45,8 @@ export const Leaderboard: React.FC = () => {
         <div className="leaderboard">
             <h1>Melon Leaderboards</h1>
             <button id="leaderboardButton" onClick={() => fetchLeaderboard()}>Reveal</button>
-            {string.map((s, i) => (
-                <div key={i}>
-                    <label>{s}</label>
-                </div>
+            {string.map((s) => (
+                <label className="leaderRow">{s}</label>
             ))}
 
         </div >

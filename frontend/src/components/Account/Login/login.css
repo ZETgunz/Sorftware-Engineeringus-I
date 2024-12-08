@@ -1,0 +1,15 @@
+h2.h2_welcome{
+    width:200px;
+}
+
+h3.h3_score{
+    width:200px;
+}
+
+h3.h3_role{
+    width:200px;
+}
+
+button.logoutButton{
+    margin-left: 50%;
+}

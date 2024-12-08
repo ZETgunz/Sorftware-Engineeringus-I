@@ -42,7 +42,6 @@ export const Grid: React.FC = () => {
         setIsPlaying(false);
         var storedScore = localStorage.getItem('score'); 
         var score = (level-1)*150;
-        alert("You score is "+score+"!");
       
         if (storedScore === null || score > parseInt(storedScore || '0')) {
             localStorage.setItem('score', score.toString());
@@ -61,8 +60,9 @@ export const Grid: React.FC = () => {
                 body: JSON.stringify(data)
             });
         setLevel(0);
+        setTimeout(()=>{alert("You score is "+score+"!");},100);
         return;
-    };
+        };
     };
 
     const fetchCell = async () => {

@@ -42,9 +42,9 @@ export const Login: React.FC = () => {
     return (
         <>
         {localStorage.getItem('username') != null ? <div>
-        <h2>Welcome {localStorage.getItem('username')}</h2> 
-        <h3>Your current score is {localStorage.getItem('score')}</h3>
-        <h3>Your current role is {localStorage.getItem('role')}</h3>
+        <h2 className="h2_welcome">Welcome, {localStorage.getItem('username')}!</h2> 
+        <h3 className="h3_score">Your current score is {localStorage.getItem('score')}</h3>
+        <h3 className="h3_role">Your current role is {localStorage.getItem('role')}</h3>
         <button onClick={() => logOut()} className="logoutButton">Logout</button>
         </ div>
         
