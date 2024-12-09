@@ -1,0 +1,32 @@
+label.text{
+-webkit-user-select: none;
+-khtml-user-select: none;
+-moz-user-select: none;
+-ms-user-select: none;
+-o-user-select: none;
+user-select: none;
+
+display:block;
+text-align: left;
+width: 1000px;
+height: 100px;
+border: 2px solid yellowgreen;
+border-radius: 3px;
+background-color:darkgreen;
+}
+
+textarea.typing{
+display:block;
+width: 1000px;
+height: 100px;
+border: 2px solid yellowgreen;
+border-radius: 3px;
+background-color:darkgreen;
+color:white;
+resize: none;
+padding:0px;
+margin:0px;
+}
+textarea.typing:focus{
+    outline: none;
+}

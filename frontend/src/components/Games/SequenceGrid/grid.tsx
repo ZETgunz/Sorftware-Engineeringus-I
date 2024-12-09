@@ -42,7 +42,8 @@ export const Grid: React.FC = () => {
         cellsToActivate.length = 0;
         setIsPlaying(false);
         var score = (level-1)*150;
-        alert("You score is "+score+"!");
+
+        setTimeout(()=>{alert("You score is "+score+"!");},100);
         getSession().then(async (session) => {
             if (session) {
                 const response = await fetch('http://localhost:5071/api/Leaderboard/'+ session.username);

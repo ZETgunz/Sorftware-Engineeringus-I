@@ -9,3 +9,11 @@
     display: table;
     clear: both;
 }
+
+label.leaderRow{
+    display:block;
+    margin-left: 180px;
+    text-align: right;
+    width:100px;
+    height:30px;
+}

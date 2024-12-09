@@ -45,11 +45,13 @@ export const Leaderboard: React.FC = () => {
         <div className="leaderboard">
             <h1>Melon Leaderboards</h1>
             <button id="leaderboardButton" onClick={() => fetchLeaderboard()}>Reveal</button>
+
             {revealed ? string.map((s, i) => (
                 <div key={i}>
-                    <label>{i+1}. {s}</label>
+                    <label className="leaderRow">{i+1}. {s}</label>
                 </div>
             )): null}
+
 
         </div >
     );

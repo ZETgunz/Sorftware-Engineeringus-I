@@ -29,6 +29,10 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+
+  background-image: url("background.png");
+  background-repeat: no-repeat;
+  background-size: 100%;
 }
 
 h1 {

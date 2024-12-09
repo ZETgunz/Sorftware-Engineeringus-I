@@ -87,15 +87,16 @@ export const Login: React.FC = () => {
         }
     };
     return (
+
     <>
             {loading ? (
                 <div>Loading...</div>
             ) : isLoggedIn ? (
        
                 <div>
-                    <h2>Welcome {username}</h2>
-                    <h3>Your score is {score}</h3>
-                    <h3>Your rank is {rank}</h3>
+                    <h2 className="h2_welcome">Welcome {username}</h2>
+                    <h3 className="h3_score">Your score is {score}</h3>
+                    <h3 className="h3_role">Your rank is {rank}</h3>
                     <button onClick={handleLogout} className="logoutButton">
                         Logout
                     </button>
