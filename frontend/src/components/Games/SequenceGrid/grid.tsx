@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Grid.css'; // Make sure to create a corresponding CSS file for styling
+import { getSession } from '../../../Utils/Session';
 
 interface cell {
     row: number;
@@ -37,32 +38,33 @@ export const Grid: React.FC = () => {
 
     };
 
-    const gameOver = () => {
+    const gameOver = async () => {
         cellsToActivate.length = 0;
         setIsPlaying(false);
-        var storedScore = localStorage.getItem('score'); 
         var score = (level-1)*150;
-      
-        if (storedScore === null || score > parseInt(storedScore || '0')) {
-            localStorage.setItem('score', score.toString());
-            return;
-        }
-        if(localStorage.getItem('username') != null){
-            const username = localStorage.getItem('username');
-            const password = localStorage.getItem('password');
-            const scoreUpdate = parseInt(localStorage.getItem('score') || '0');
-            const data = {password, score: scoreUpdate};
-            fetch('http://localhost:5071/api/Account/' + username, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            });
-        setLevel(0);
+
         setTimeout(()=>{alert("You score is "+score+"!");},100);
-        return;
-        };
+        getSession().then(async (session) => {
+            if (session) {
+                const response = await fetch('http://localhost:5071/api/Leaderboard/'+ session.username);
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.statusText}`);
+                }
+                const data = await response.json();
+                score += data.score;
+
+                await fetch('http://localhost:5071/api/Account/' + session.username, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        score: score
+                    }),
+                });
+            }
+        });
+
     };
 
     const fetchCell = async () => {

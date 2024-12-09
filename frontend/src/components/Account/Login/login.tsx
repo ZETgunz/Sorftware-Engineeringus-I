@@ -1,69 +1,136 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import './login.css'; // Make sure to create a corresponding CSS file for styling
+import './login.css';
+import { createSession, getSession, logout } from '../../../Utils/Session';
 
 export const Login: React.FC = () => {
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [username, setUsername] = useState('');
+    const [score, setScore] = useState(0);
+    const [rank, setRank] = useState(0);
+    const [loading, setLoading] = useState(true);
+
+    // Check session on component mount
+    useEffect(() => {
+        const checkSession = async () => {
+            try {
+                const session = await getSession();
+                if (session) {
+                    setUsername(session.username);
+                    setIsLoggedIn(true);
+                    handleScore(session.username);
+                }
+                else {
+                    throw new Error('No session found');
+                }
+            } catch {
+                setIsLoggedIn(false);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        checkSession();
+    }, []);
 
     const validate = async () => {
+        const usernameInput = (document.getElementById('username') as HTMLInputElement).value;
+        const passwordInput = (document.getElementById('password') as HTMLInputElement).value;
 
-        const username = (document.getElementById("username") as HTMLInputElement).value;
-        const password = (document.getElementById("password") as HTMLInputElement).value;
         try {
-            const response = await fetch('http://localhost:5071/api/Account/' + username + '/' + password);
+            const response = await fetch('http://localhost:5071/api/Account/getAccount', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username: usernameInput, password: passwordInput }),
+            });
+
             if (!response.ok) {
-                alert("User was not found")
+                alert('User not found or invalid credentials.');
                 throw new Error(`Error: ${response.statusText}`);
             }
 
-            const data = await response.json();
-            
-            console.log(data);
-            
-            localStorage.setItem('username', data.username);
-            localStorage.setItem('password', data.password);
-            localStorage.setItem('score', data.score);
-            localStorage.setItem('role', data.role);    
-            location.reload();
-        
-            return;
+            // Create session and update state
+            await createSession({ username: usernameInput });
+            const session = await getSession();
+            setUsername(session.username);
+            setIsLoggedIn(true);
+            handleScore(session.username);
         } catch (error) {
-            console.error('Error creating account:', error);
+            console.error('Error logging in:', error);
         }
-    }
+    };
 
-    const logOut = () => {
-        localStorage.removeItem('username')
-        localStorage.removeItem('password');
-        localStorage.removeItem('score');
-        localStorage.removeItem('role');
-        location.reload();
-    }
+    const handleScore = async (Username) => {
+        try{
+            const data = await fetch('http://localhost:5071/api/Leaderboard/'+Username);
+            if (!data.ok) {
+                throw new Error(`Error: ${data.statusText}`);
+            }
+            const scoreData = await data.json();
+            console.log(scoreData);
+            setScore(scoreData.score);
+            setRank(scoreData.rank);
+        } catch (error) {
+            console.error('Error fetching score:', error);
+        }
+    };
 
+    const handleLogout = async () => {
+        try {
+            await logout();
+            setIsLoggedIn(false);
+            setUsername('');
+        } catch (error) {
+            console.error('Error logging out:', error);
+        }
+    };
     return (
-        <>
-        {localStorage.getItem('username') != null ? <div>
-        <h2 className="h2_welcome">Welcome, {localStorage.getItem('username')}!</h2> 
-        <h3 className="h3_score">Your current score is {localStorage.getItem('score')}</h3>
-        <h3 className="h3_role">Your current role is {localStorage.getItem('role')}</h3>
-        <button onClick={() => logOut()} className="logoutButton">Logout</button>
-        </ div>
-        
-        : 
-        
-        
-        <div className="login">
-            <h1>Melon Login</h1>
-            <label>Username:</label>
-            <input type="text" id="username" name="username" placeholder="Enter your username"></input>
-            <br />
-            <label>Password:</label>
-            <input type="password" id="password" name="password" placeholder="Enter your password"></input>
-            <br />
-            <button onClick={() => validate()} className="loginButton">Login</button>
-            <br />
-            <br />
-            <label>Don't have an account?</label>
-            <Link to="/account/register" className="nav-link">Click to create one</Link>
-        </div >}</>
+
+    <>
+            {loading ? (
+                <div>Loading...</div>
+            ) : isLoggedIn ? (
+       
+                <div>
+                    <h2 className="h2_welcome">Welcome {username}</h2>
+                    <h3 className="h3_score">Your score is {score}</h3>
+                    <h3 className="h3_role">Your rank is {rank}</h3>
+                    <button onClick={handleLogout} className="logoutButton">
+                        Logout
+                    </button>
+                </div>
+            ) : (
+                <div className="login">
+                    <h1>Melon Login</h1>
+                    <label>Username:</label>
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        placeholder="Enter your username"
+                    />
+                    <br />
+                    <label>Password:</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Enter your password"
+                    />
+                    <br />
+                    <button onClick={validate} className="loginButton">
+                        Login
+                    </button>
+                    <br />
+                    <br />
+                    <label>Don't have an account?</label>
+                    <Link to="/account/register" className="nav-link">
+                        Click to create one
+                    </Link>
+                </div>
+            )}
+        </>
     );
-}
+};
