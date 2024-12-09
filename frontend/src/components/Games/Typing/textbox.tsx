@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { getSession } from '../../../Utils/Session';
 import './textbox.css'; // Make sure to create a corresponding CSS file for styling
 
 export const Textbox: React.FC = () => {
@@ -55,7 +56,27 @@ export const Textbox: React.FC = () => {
         score = Math.round(score);
         setText("Click Start to start (unexpected)!");
         (document.getElementById("typing") as HTMLInputElement).value = "";
-        alert("Your score is " + score + "!");
+        alert("You score is "+score+"!");
+        getSession().then(async (session) => {
+            if (session) {
+                const response = await fetch('http://localhost:5071/api/Leaderboard/'+ session.username);
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.statusText}`);
+                }
+                const data = await response.json();
+                score += data.score;
+
+                await fetch('http://localhost:5071/api/Account/' + session.username, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        score: score
+                    }),
+                });
+            }
+        });
     }
 
     return (

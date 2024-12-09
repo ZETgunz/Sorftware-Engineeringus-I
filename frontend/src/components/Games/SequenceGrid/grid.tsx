@@ -43,7 +43,7 @@ export const Grid: React.FC = () => {
         setIsPlaying(false);
         var score = (level-1)*150;
 
-        setTimeout(()=>{alert("You score is "+score+"!");},100);
+        alert("You score is "+score+"!");
         getSession().then(async (session) => {
             if (session) {
                 const response = await fetch('http://localhost:5071/api/Leaderboard/'+ session.username);
