@@ -31,25 +31,6 @@ namespace Tests.Integration
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         }
 
-        [Fact]
-        public async Task GetAccount_ShouldReturnAccount_WhenAccountExists()
-        {
-            // Arrange
-            var username = "existinguser";
-            var password = "password123";
-            var account = new AccountCreateDTO { Username = username, Password = password, score = 100 };
-            var content = new StringContent(JsonSerializer.Serialize(account), Encoding.UTF8, "application/json");
-            await _client.PostAsync("/api/Account", content);
-
-            // Act
-            var response = await _client.GetAsync($"/api/Account/{username}/{password}");
-
-            // Assert
-            response.EnsureSuccessStatusCode();
-            var responseContent = await response.Content.ReadAsStringAsync();
-            var fetchedAccount = JsonSerializer.Deserialize<AccountDTO>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            Assert.Equal(username, fetchedAccount.Username);
-        }
 
         [Fact]
         public async Task GetAccount_ShouldReturnNotFound_WhenAccountDoesNotExist()

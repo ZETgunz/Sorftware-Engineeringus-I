@@ -144,20 +144,36 @@ namespace backend.Controllers
 
             try
             {
-                _accountValidator.Validate(new Account(username, updatedAccountUpdateDTO.Password));
-
-                var accountDTO = await _accountRepository.GetAccountByUsername(username);
-                if (accountDTO == null)
+                if (updatedAccountUpdateDTO.Password != null)
                 {
-                    _logger.LogWarning("Account not found with username: {Username}", username);
-                    return NotFound("Account not found with username: " + username);
+                    _accountValidator.Validate(new Account(username, updatedAccountUpdateDTO.Password));
+
+                    var accountDTO = await _accountRepository.GetAccountByUsername(username);
+                    if (accountDTO == null)
+                    {
+                        _logger.LogWarning("Account not found with username: {Username}", username);
+                        return NotFound("Account not found with username: " + username);
+                    }
+
+                    accountDTO.Password = updatedAccountUpdateDTO.Password;
+                    accountDTO.score = updatedAccountUpdateDTO.score;
+
+                    await _accountRepository.UpdateAccount(accountDTO);
+                    return Ok(accountDTO);
                 }
+                else
+                {
+                    var accountDTO = await _accountRepository.GetAccountByUsername(username);
+                    if (accountDTO == null)
+                    {
+                        _logger.LogWarning("Account not found with username: {Username}", username);
+                        return NotFound("Account not found");
+                    }
 
-                accountDTO.Password = updatedAccountUpdateDTO.Password;
-                accountDTO.score = updatedAccountUpdateDTO.score;
-
-                await _accountRepository.UpdateAccount(accountDTO);
-                return Ok(accountDTO);
+                    accountDTO.score = updatedAccountUpdateDTO.score;
+                    await _accountRepository.UpdateAccount(accountDTO);
+                    return Ok(accountDTO);
+                }
             }
             catch (InvalidCredentialsException ex)
             {
