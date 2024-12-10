@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './leaderboard.css'; // Make sure to create a corresponding CSS file for styling
 
 interface board {
@@ -45,11 +45,13 @@ export const Leaderboard: React.FC = () => {
         <div className="leaderboard">
             <h1>Melon Leaderboards</h1>
             <button id="leaderboardButton" onClick={() => fetchLeaderboard()}>Reveal</button>
-            {string.map((s, i) => (
+
+            {revealed ? string.map((s, i) => (
                 <div key={i}>
-                    <label>{s}</label>
+                    <label className="leaderRow">{i+1}. {s}</label>
                 </div>
-            ))}
+            )): null}
+
 
         </div >
     );

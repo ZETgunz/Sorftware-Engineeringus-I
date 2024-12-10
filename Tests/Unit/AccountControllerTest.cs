@@ -58,11 +58,12 @@ namespace Tests
             var account = new AccountDTO { Username = username, Password = password, role = Role.User, score = 100 };
             _mockAccountRepository.Setup(repo => repo.GetAccountByUsername(username)).ReturnsAsync(account);
 
+            var accountLoginDTO = new AccountLoginDTO { Username = username, Password = password };
             // Act
-            var result = await _accountController.GetAccount(username, password);
+            var result = await _accountController.GetAccount(accountLoginDTO);
 
             // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result.Result);
+            var okResult = Assert.IsType<OkObjectResult>(result);
             var returnAccount = Assert.IsType<AccountDTO>(okResult.Value);
             Assert.Equal(username, returnAccount.Username);
         }
@@ -137,13 +138,15 @@ namespace Tests
             // Arrange
             var username = "user1";
             var password = "invalidpassword";
+            var accountLoginDTO = new AccountLoginDTO { Username = username, Password = password };
             _mockValidator.Setup(v => v.Validate(It.IsAny<Account>())).Throws(new InvalidCredentialsException("Invalid credentials"));
 
             // Act
-            var result = await _accountController.GetAccount(username, password);
+
+            var result = await _accountController.GetAccount(accountLoginDTO);
 
             // Assert
-            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
             Assert.Equal("Invalid credentials", badRequestResult.Value);
         }
 
@@ -155,11 +158,12 @@ namespace Tests
             var password = "password1";
             _mockAccountRepository.Setup(repo => repo.GetAccountByUsername(username)).ThrowsAsync(new AccountNotFoundException());
 
+            var accountLoginDTO = new AccountLoginDTO { Username = username, Password = password };
             // Act
-            var result = await _accountController.GetAccount(username, password);
+            var result = await _accountController.GetAccount(accountLoginDTO);
 
             // Assert
-            var notFoundResult = Assert.IsType<NotFoundObjectResult>(result.Result);
+            var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
             Assert.Equal("Account not found with username: " + username, notFoundResult.Value);
         }
 

@@ -1,5 +1,7 @@
 import React from 'react';
 import './register.css'; // Make sure to create a corresponding CSS file for styling
+import { Link } from 'react-router-dom';
+import { createSession } from '../../../Utils/Session';
 
 export const Register: React.FC = () => {
 
@@ -27,6 +29,8 @@ export const Register: React.FC = () => {
                 alert(data);
                 return;
             }
+            createSession({ username });
+            window.location.href = "http://localhost:5173/account/login"
             alert("Account succesfully created!");
             return;
         } catch (error) {

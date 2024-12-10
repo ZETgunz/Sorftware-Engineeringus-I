@@ -9,9 +9,9 @@ namespace backend.Controllers
     [Route("api/[controller]")]
     public class SessionController : ControllerBase
     {
-        private readonly ISessionManager _sessionManager;
+        private readonly SessionManager _sessionManager;
 
-        public SessionController(ISessionManager sessionManager)
+        public SessionController(SessionManager sessionManager)
         {
             _sessionManager = sessionManager;
         }
@@ -23,7 +23,7 @@ namespace backend.Controllers
             Response.Cookies.Append("SessionId", sessionId, new CookieOptions
             {
                 HttpOnly = true,
-                Secure = true,
+                Secure = false,
                 Expires = DateTime.Now.AddMinutes(30)
             });
 
