@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './login.css';
 import { createSession, getSession, logout } from '../../../Utils/Session';
+import { hashString } from '../../../Utils/Hash';
 
 export const Login: React.FC = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -43,7 +44,7 @@ export const Login: React.FC = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ username: usernameInput, password: passwordInput }),
+                body: JSON.stringify({ username: usernameInput, password: hashString(passwordInput) }),
             });
 
             if (!response.ok) {
