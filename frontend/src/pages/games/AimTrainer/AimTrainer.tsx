@@ -9,9 +9,9 @@ interface Target {
 
 const AimTrainer: React.FC = () => {
   const [target, setTarget] = useState<Target | null>(null);
-  const [nextTarget, setNextTarget] = useState<Target | null>(null); // Preloaded next target
+  const [nextTarget, setNextTarget] = useState<Target | null>(null); 
   const [score, setScore] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(30); // Timer for 30 seconds
+  const [timeLeft, setTimeLeft] = useState(30); 
   const [isGameActive, setIsGameActive] = useState(false);
   const gameAreaRef = useRef<HTMLDivElement>(null);
 
@@ -56,7 +56,7 @@ const AimTrainer: React.FC = () => {
     const initialTarget = await fetchTarget();
     setTarget(initialTarget);
 
-    preloadNextTarget(); // Preload the next target
+    preloadNextTarget(); 
   };
 
   const fetchTarget = async (): Promise<Target> => {
@@ -85,7 +85,7 @@ const AimTrainer: React.FC = () => {
       }
     }
 
-    return { x: 0, y: 0 }; // Fallback target in case of errors
+    return { x: 0, y: 0 }; 
   };
 
   const preloadNextTarget = async () => {
@@ -96,8 +96,8 @@ const AimTrainer: React.FC = () => {
   const handleTargetClick = async () => {
     if (isGameActive && nextTarget) {
       setScore((prev) => prev + 25);
-      setTarget(nextTarget); // Show preloaded target
-      preloadNextTarget(); // Fetch the subsequent target
+      setTarget(nextTarget); 
+      preloadNextTarget(); 
     }
   };
 
