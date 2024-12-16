@@ -7,6 +7,7 @@ import { AccountLogin } from './pages/Account/Login/login';
 import { AccountRegister } from './pages/Account/Register/register';
 import { Typing } from './pages/games/Typing/Typing';
 import { Sequence } from './pages/games/Sequence/Sequence';
+import AimTrainer from './pages/games/AimTrainer/AimTrainer';
 
 export const App = () => {
   return (
@@ -20,6 +21,8 @@ export const App = () => {
         <Route path="/account/register" element={<AccountRegister />} />
         <Route path="/typing" element={<Typing />} />
         <Route path="/sequence" element={<Sequence />} />
+        <Route path="/aimTrainer" element={<AimTrainer />} />
+        <Route path="*" element={<h1>Not Found</h1>} />
       </Routes>
     </BrowserRouter>
   );

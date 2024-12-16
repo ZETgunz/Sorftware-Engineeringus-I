@@ -1,0 +1,18 @@
+.aim-trainer {
+    text-align: center;
+    font-family: Arial, sans-serif;
+  }
+  
+  .stats {
+    margin-bottom: 20px;
+  }
+  
+  .game-area {
+    background-color: #f0f0f0;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .target {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
