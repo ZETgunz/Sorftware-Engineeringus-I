@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { getSession } from "../../../Utils/Session";
 import "./AimTrainer.css";
+import melonImage from "./melon.png"; // Import the image
 
 interface Target {
   x: number;
@@ -117,7 +118,7 @@ const AimTrainer: React.FC = () => {
             ref={gameAreaRef}
             style={{
               position: "relative",
-              width: "80vw",
+              width: "60vw",
               height: "60vh",
               border: "2px solid black",
               margin: "0 auto",
@@ -132,7 +133,8 @@ const AimTrainer: React.FC = () => {
                   width: 50,
                   height: 50,
                   borderRadius: "50%",
-                  backgroundColor: "red",
+                  backgroundImage: `url(${melonImage})`, // Use the imported image
+                  backgroundSize: "cover",
                   top: target.y,
                   left: target.x,
                   cursor: "pointer",
