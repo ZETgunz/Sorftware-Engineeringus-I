@@ -22,7 +22,7 @@ export const SeekerGrid: React.FC = () => {
             if(level == 10){
                 finish();
             }
-            if(timeElapsed==(timeElapsed%100) && timeElapsed!=0) {
+            if(timeElapsed==100 && timeElapsed!=0) {
                 setTimeTotal(timeTotal+timeElapsed);
                 setTimeElapsed(0);
                 playGame();
