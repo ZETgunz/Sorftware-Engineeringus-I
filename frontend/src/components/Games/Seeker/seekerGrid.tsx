@@ -1,36 +1,49 @@
 import React, { useState, useEffect } from 'react';
 import { getSession } from '../../../Utils/Session';
-import './textbox.css'; // Make sure to create a corresponding CSS file for styling
+import './seekerGrid.css'; // Make sure to create a corresponding CSS file for styling
 
-export const Textbox: React.FC = () => {
-    const [text, setText] = useState("Click Start to start (unexpected)!");
-    //const [typing, setTyping] = useState("");
+interface cell {
+    row: number;
+    column: number;
+}
+
+export const SeekerGrid: React.FC = () => {
+    const initialGrid = Array(10).fill(Array(10).fill(0));
+    const [grid, setGrid] = useState(initialGrid);
     const [isPlaying, setIsPlaying] = useState(false);
+    const [rotten, setRotten] = useState([0,0]);
     const [timeElapsed, setTimeElapsed] = useState(0);
-    //var timeElapsed = Math.floor(0);
+    const [level, setLevel] = useState(0);
 
     useEffect(()=> {
         let timer: NodeJS.Interval;
         if (isPlaying) {
-            timer = setInterval(() => {setTimeElapsed((timeElapsed) => timeElapsed + 0.5); console.log("Time passed!");}, 500);
+            if(level == 10){
+                finish();
+            }
+            if(timeElapsed==(timeElapsed%100) && timeElapsed!=0) {
+                playGame();
+            }
+            timer = setInterval(() => {setTimeElapsed((timeElapsed) => timeElapsed + 1); console.log("Time passed!");}, 100);
         }
         return () => clearInterval(timer);
     }, [isPlaying])
 
     const playGame = async () => {
         setIsPlaying(true);
-        await fetchText();
+        setLevel(level+1);
+        await fetchCell();
     };
 
-    const fetchText = async () => {
+    const fetchCell = async () => {
         try {
-            const response = await fetch('http://localhost:5071/api/Typing/');
+            const response = await fetch('http://localhost:5071/api/Seeker/');
             if (!response.ok) {
                 throw new Error(`Error: ${response.statusText}`);
             }
-            const data: string = await response.text();
-            setText(data);
-            console.log(text);
+            const data = await response.json();
+            setRotten(data);
+            console.log(data);
             //console.log(response.text());
             return data;
         } catch (error) {
@@ -40,21 +53,8 @@ export const Textbox: React.FC = () => {
 
     const finish = () => {
         setIsPlaying(false);
-        const arrText = text.split('');
-        const arrTyping = (document.getElementById("typing") as HTMLInputElement).value.split('');
-        var score = 0;
-        const scoreMax = 1000;
-        const scoreRate = scoreMax / text.length;
-        for (var i = 0; i < arrText.length; i++) {
-            if (arrText[i] == arrTyping[i]) {
-                score += scoreRate;
-            }
-        }
-        if(timeElapsed>5) {score -= Math.floor(timeElapsed-5);}
-        console.log(timeElapsed);
-        score = Math.round(score);
-        setText("Click Start to start (unexpected)!");
-        (document.getElementById("typing") as HTMLInputElement).value = "";
+        var score = 1000;
+        score -= timeElapsed/10;
         alert("You score is "+score+"!");
         getSession().then(async (session) => {
             if (session) {
@@ -78,14 +78,28 @@ export const Textbox: React.FC = () => {
         });
     }
 
+    const handleClick = (rowIndex: number, colIndex: number) => {
+        if (!isPlaying) return;
+
+    };
+
     return (
-        <div className="textbox">
-            <h1>Melon Typing</h1>
-            <label className="text">{text}</label>
-            <br />
-            <textarea type="text" className="typing" id="typing"></textarea>
-            <br />
-            <button onClick={() => finish()} className={isPlaying ? 'active' : 'disabled'}>Finish</button>
+        <div className="seekergrid">
+            <h1>Melon Seeker</h1>
+            <h2>Level: {level}</h2>
+            {grid.map((row, rowIndex) => (
+                <div key={rowIndex} className="row">
+                    {row.map((cell: number, colIndex: number) => (
+                        <div
+                            key={colIndex}
+                            className={`${(rotten => rotten[0] === rowIndex && rotten[1] === colIndex) ? 'rotten' : ''} ${(rotten => rotten[0] != rowIndex && rotten[1] != colIndex) ? 'good' : ''}`}
+
+                            onClick={() => handleClick(rowIndex, colIndex)}
+                        >
+                        </div>
+                    ))}
+                </div>
+            ))}
             <button onClick={() => playGame()} className={isPlaying ? 'disabled' : 'active'}>Start</button>
         </div >
     );
