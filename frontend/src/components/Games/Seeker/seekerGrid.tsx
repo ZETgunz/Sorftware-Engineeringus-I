@@ -101,9 +101,9 @@ export const SeekerGrid = () => {
     return grid.map((row, rowIndex) => (
       <div key={rowIndex} style={{ display: 'flex' }}>
         {row.map((tile, colIndex) => {
-          const backgroundColor = tile === 1 
-            ? 'rgba(200, 200, 200, 1)' // Slightly darker tile
-            : 'rgba(255, 255, 255, 1)'; // Bright white for other tiles
+          const backgroundImage = tile === 1 
+            ? 'url("melon_rotten.png")' // Slightly darker tile
+            : 'url("melon_rotten.good")'; // Bright white for other tiles
           
           return (
             <div 
@@ -112,7 +112,7 @@ export const SeekerGrid = () => {
               style={{
                 width: '40px',
                 height: '40px',
-                backgroundColor: backgroundColor,
+                backgroundImage: backgroundImage,
                 border: '1px solid #e0e0e0',
                 cursor: 'pointer'
               }}
