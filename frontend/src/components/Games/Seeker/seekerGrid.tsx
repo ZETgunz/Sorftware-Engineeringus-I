@@ -19,7 +19,7 @@ export const SeekerGrid: React.FC = () => {
     useEffect(()=> {
         let timer: NodeJS.Interval;
         if (isPlaying) {
-            if(level == 10){
+            if(level == 11){
                 finish();
             }
             if(timeElapsed==100) {
