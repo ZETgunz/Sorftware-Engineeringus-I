@@ -13,6 +13,7 @@ export const SeekerGrid: React.FC = () => {
     const [isPlaying, setIsPlaying] = useState(false);
     const [rotten, setRotten] = useState([0,0]);
     const [timeElapsed, setTimeElapsed] = useState(0);
+    const [timeTotal, setTimeTotal] = useState(0);
     const [level, setLevel] = useState(0);
 
     useEffect(()=> {
@@ -22,6 +23,8 @@ export const SeekerGrid: React.FC = () => {
                 finish();
             }
             if(timeElapsed==(timeElapsed%100) && timeElapsed!=0) {
+                setTimeTotal(timeTotal+timeElapsed);
+                setTimeElapsed(0);
                 playGame();
             }
             timer = setInterval(() => {setTimeElapsed((timeElapsed) => timeElapsed + 1); console.log("Time passed!");}, 100);
@@ -54,7 +57,7 @@ export const SeekerGrid: React.FC = () => {
     const finish = () => {
         setIsPlaying(false);
         var score = 1000;
-        score -= timeElapsed/10;
+        score -= timeTotal*10;
         alert("You score is "+score+"!");
         getSession().then(async (session) => {
             if (session) {
@@ -80,7 +83,9 @@ export const SeekerGrid: React.FC = () => {
 
     const handleClick = (rowIndex: number, colIndex: number) => {
         if (!isPlaying) return;
-
+        //jei ne rotten - setTimeTotal(timeTotal+10); setTimeElapsed(0);
+        //jei rotten - setTimeTotal(timeTotal+timeElapsed); setTimeElapsed(0);
+        playGame();
     };
 
     return (
