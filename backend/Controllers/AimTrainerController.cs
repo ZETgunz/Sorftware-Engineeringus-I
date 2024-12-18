@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using backend.Models;
 
-namespace AimTrainerAPI.Controllers
+namespace backend.Controllers
 {
     [ApiController]
     [Route("api/aimtrainer")]
