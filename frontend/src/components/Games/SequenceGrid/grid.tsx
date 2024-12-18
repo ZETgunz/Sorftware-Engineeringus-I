@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './Grid.css'; // Make sure to create a corresponding CSS file for styling
+import './grid.css'; // Make sure to create a corresponding CSS file for styling
 import { getSession } from '../../../Utils/Session';
 
 interface cell {

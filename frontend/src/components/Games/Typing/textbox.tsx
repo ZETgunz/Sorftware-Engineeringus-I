@@ -7,10 +7,18 @@ export const Textbox: React.FC = () => {
     //const [typing, setTyping] = useState("");
     const [isPlaying, setIsPlaying] = useState(false);
     const [timeElapsed, setTimeElapsed] = useState(0);
+    //var timeElapsed = Math.floor(0);
+
+    useEffect(()=> {
+        let timer: NodeJS.Interval;
+        if (isPlaying) {
+            timer = setInterval(() => {setTimeElapsed((timeElapsed) => timeElapsed + 0.5); console.log("Time passed!");}, 500);
+        }
+        return () => clearInterval(timer);
+    }, [isPlaying])
 
     const playGame = async () => {
         setIsPlaying(true);
-        setTimeout(() => {timer();}, 500);
         await fetchText();
     };
 
@@ -30,18 +38,8 @@ export const Textbox: React.FC = () => {
         }
     };
 
-    const timer = () => {
-        console.log("time passed");
-        if (isPlaying) {
-            setTimeElapsed(timeElapsed + 0.5);
-            setTimeout(() => {timer();}, 500)
-        }
-        else return;
-    }
-
     const finish = () => {
         setIsPlaying(false);
-        //setTyping((document.getElementById("typing") as HTMLInputElement).value);
         const arrText = text.split('');
         const arrTyping = (document.getElementById("typing") as HTMLInputElement).value.split('');
         var score = 0;
@@ -52,7 +50,8 @@ export const Textbox: React.FC = () => {
                 score += scoreRate;
             }
         }
-        if(timeElapsed>=5) score -= score - score/(1+((timeElapsed-5)/10)) ;
+        if(timeElapsed>5) {score -= Math.floor(timeElapsed-5);}
+        console.log(timeElapsed);
         score = Math.round(score);
         setText("Click Start to start (unexpected)!");
         (document.getElementById("typing") as HTMLInputElement).value = "";

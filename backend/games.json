@@ -16,5 +16,11 @@
     "Name": "Speed Writing",
     "Description": "Write about Melons as fast and correct as possible",
     "Route": "/speedWriting"
+  },
+  {
+    "Id": 8,
+    "Name": "Melon Seeker",
+    "Description": "Seek out the slightly rotten Melon in time. (WIP)",
+    "Route": "/seeker"
   }
 ]
