@@ -1,106 +1,188 @@
 import React, { useState, useEffect } from 'react';
 import { getSession } from '../../../Utils/Session';
-import './seekerGrid.css'; // Make sure to create a corresponding CSS file for styling
 
-interface cell {
-    row: number;
-    column: number;
-}
+export const SeekerGrid = () => {
+  const [grid, setGrid] = useState<number[][]>([]);
+  const [targetTile, setTargetTile] = useState<{row: number, col: number} | null>(null);
+  const [gameStarted, setGameStarted] = useState(false);
+  const [timeRemaining, setTimeRemaining] = useState(30);
+  const [score, setScore] = useState(0);
+  const [gameOver, setGameOver] = useState(false);
 
-export const SeekerGrid: React.FC = () => {
-    const initialGrid = Array(10).fill(Array(10).fill(0));
-    const [grid, setGrid] = useState(initialGrid);
-    const [isPlaying, setIsPlaying] = useState(false);
-    const [rotten, setRotten] = useState([0,0]);
-    const [timeElapsed, setTimeElapsed] = useState(0);
-    const [level, setLevel] = useState(0);
+  useEffect(() => {
+    resetGrid();
+  }, []);
 
-    useEffect(()=> {
-        let timer: NodeJS.Interval;
-        if (isPlaying) {
-            if(level == 10){
-                finish();
-            }
-            if(timeElapsed==(timeElapsed%100) && timeElapsed!=0) {
-                playGame();
-            }
-            timer = setInterval(() => {setTimeElapsed((timeElapsed) => timeElapsed + 1); console.log("Time passed!");}, 100);
-        }
-        return () => clearInterval(timer);
-    }, [isPlaying])
-
-    const playGame = async () => {
-        setIsPlaying(true);
-        setLevel(level+1);
-        await fetchCell();
-    };
-
-    const fetchCell = async () => {
-        try {
-            const response = await fetch('http://localhost:5071/api/Seeker/');
-            if (!response.ok) {
-                throw new Error(`Error: ${response.statusText}`);
-            }
-            const data = await response.json();
-            setRotten(data);
-            console.log(data);
-            //console.log(response.text());
-            return data;
-        } catch (error) {
-            console.error('Error fetching text:', error);
-        }
-    };
-
-    const finish = () => {
-        setIsPlaying(false);
-        var score = 1000;
-        score -= timeElapsed/10;
-        alert("You score is "+score+"!");
-        getSession().then(async (session) => {
-            if (session) {
-                const response = await fetch('http://localhost:5071/api/Leaderboard/'+ session.username);
-                if (!response.ok) {
-                    throw new Error(`Error: ${response.statusText}`);
-                }
-                const data = await response.json();
-                score += data.score;
-
-                await fetch('http://localhost:5071/api/Account/' + session.username, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        score: score
-                    }),
-                });
-            }
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (gameStarted && timeRemaining > 0) {
+      timer = setInterval(() => {
+        setTimeRemaining(prev => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            setGameStarted(false);
+            setGameOver(true);
+            handleGameEnd();
+            return 0;
+          }
+          return prev - 1;
         });
+      }, 1000);
     }
+    return () => clearInterval(timer);
+  }, [gameStarted, score]);
 
-    const handleClick = (rowIndex: number, colIndex: number) => {
-        if (!isPlaying) return;
-
-    };
-
-    return (
-        <div className="seekergrid">
-            <h1>Melon Seeker</h1>
-            <h2>Level: {level}</h2>
-            {grid.map((row, rowIndex) => (
-                <div key={rowIndex} className="row">
-                    {row.map((cell: number, colIndex: number) => (
-                        <div
-                            key={colIndex}
-                            className={`${(rotten => rotten[0] === rowIndex && rotten[1] === colIndex) ? 'rotten' : ''} ${(rotten => rotten[0] != rowIndex && rotten[1] != colIndex) ? 'good' : ''}`}
-
-                            onClick={() => handleClick(rowIndex, colIndex)}
-                        >
-                        </div>
-                    ))}
-                </div>
-            ))}
-            <button onClick={() => playGame()} className={isPlaying ? 'disabled' : 'active'}>Start</button>
-        </div >
+  const resetGrid = () => {
+    const newGrid = Array.from({ length: 10 }, () => 
+      Array.from({ length: 10 }, () => 0)
     );
-}
+    
+    const targetRow = Math.floor(Math.random() * 10);
+    const targetCol = Math.floor(Math.random() * 10);
+    newGrid[targetRow][targetCol] = 1;
+
+    setGrid(newGrid);
+    setTargetTile({ row: targetRow, col: targetCol });
+  };
+
+  const handleGameEnd = () => {
+    getSession().then(async (session) => {
+      if (session) {
+        try {
+          const response = await fetch('http://localhost:5071/api/Leaderboard/' + session.username);
+          let currentScore = 0;
+          if (response.ok) {
+            const data = await response.json();
+            currentScore = data.score || 0;
+          }
+
+          const updatedScore = currentScore + score;
+
+          const updateResponse = await fetch('http://localhost:5071/api/Account/' + session.username, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              score: updatedScore
+            }),
+          });
+
+          if (!updateResponse.ok) {
+            throw new Error(`Error updating score: ${updateResponse.statusText}`);
+          }
+
+          console.log('Score updated successfully:', updatedScore);
+        } catch (error) {
+          console.error('Error uploading score:', error);
+        }
+      }
+    });
+  };
+
+  const startGame = () => {
+    setGameStarted(true);
+    setGameOver(false);
+    setScore(0);
+    setTimeRemaining(30);
+    resetGrid();
+  };
+
+  const handleTileClick = (row: number, col: number) => {
+    if (!gameStarted) return;
+
+    if (targetTile && row === targetTile.row && col === targetTile.col) {
+      setScore(prev => prev + 25);
+      resetGrid();
+    }
+  };
+
+  const renderGrid = () => {
+    return grid.map((row, rowIndex) => (
+      <div key={rowIndex} style={{ display: 'flex' }}>
+        {row.map((tile, colIndex) => {
+          const backgroundColor = tile === 1 
+            ? 'rgba(200, 200, 200, 1)' // Slightly darker tile
+            : 'rgba(255, 255, 255, 1)'; // Bright white for other tiles
+          
+          return (
+            <div 
+              key={colIndex} 
+              onClick={() => handleTileClick(rowIndex, colIndex)}
+              style={{
+                width: '40px',
+                height: '40px',
+                backgroundColor: backgroundColor,
+                border: '1px solid #e0e0e0',
+                cursor: 'pointer'
+              }}
+            />
+          );
+        })}
+      </div>
+    ));
+  };
+
+  return (
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      padding: '20px',
+      fontFamily: 'Arial, sans-serif'
+    }}>
+      <h1>Extreme Tile Seeker</h1>
+      
+      {!gameStarted && !gameOver && (
+        <button 
+          onClick={startGame}
+          style={{
+            padding: '10px 20px',
+            fontSize: '16px',
+            margin: '20px 0'
+          }}
+        >
+          Start Game
+        </button>
+      )}
+
+      {gameStarted && (
+        <div style={{ 
+          display: 'flex', 
+          gap: '20px', 
+          margin: '10px 0' 
+        }}>
+          <span>Time: {timeRemaining} sec</span>
+          <span>Score: {score}</span>
+        </div>
+      )}
+
+      {gameOver && (
+        <div style={{ textAlign: 'center' }}>
+          <h2>Game Over!</h2>
+          <p>Your Score: {score}</p>
+          <button 
+            onClick={startGame}
+            style={{
+              padding: '10px 20px',
+              fontSize: '16px',
+              margin: '20px 0'
+            }}
+          >
+            Play Again
+          </button>
+        </div>
+      )}
+
+      <div style={{ 
+        display: 'flex', 
+        flexDirection: 'column',
+        border: '2px solid #333' 
+      }}>
+        {renderGrid()}
+      </div>
+    </div>
+  );
+};
+
+export default SeekerGrid;

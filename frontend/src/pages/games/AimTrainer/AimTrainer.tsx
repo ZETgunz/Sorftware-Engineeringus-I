@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { getSession } from "../../../Utils/Session";
 import "./AimTrainer.css";
 import melonImage from "./melon.png"; // Import the image
+import { scryRenderedComponentsWithType } from "react-dom/test-utils";
 
 interface Target {
   x: number;
@@ -31,7 +32,7 @@ const AimTrainer: React.FC = () => {
                           throw new Error(`Error: ${response.statusText}`);
                       }
                       const data = await response.json();
-                      setScore(score + data.score);
+                      var updatedScore = score + data.score;
       
                       await fetch('http://localhost:5071/api/Account/' + session.username, {
                           method: 'PUT',
@@ -39,7 +40,7 @@ const AimTrainer: React.FC = () => {
                               'Content-Type': 'application/json',
                           },
                           body: JSON.stringify({
-                              score: score
+                              score: updatedScore
                           }),
                       });
                   }

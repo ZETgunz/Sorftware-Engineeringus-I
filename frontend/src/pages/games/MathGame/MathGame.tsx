@@ -134,7 +134,7 @@ const MathChallenge: React.FC = () => {
       }
       
       const userData = await response.json();
-      const currentTotalScore = userData.score || 0;
+      const currentTotalScore = userData.score;
       const updatedTotalScore = currentTotalScore + score;
 
       const updateResponse = await fetch(`http://localhost:5071/api/Account/${username}`, {
