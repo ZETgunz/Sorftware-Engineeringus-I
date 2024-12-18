@@ -17,21 +17,18 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: rgba(255, 255, 255, 1);
+    background-color: rgba(255, 255, 255, 0);
     border-radius: 10px;
     border: 1px solid #ccc;
     cursor: pointer;
-    transition: background-color 0.3s ease;
 }
 
-.cell.active {
-    background-color: #ffeb3b;
-    background-image: url("melon.png");
+.cell.good {
+    background-image: url("melon_good.png");
 }
 
-.cell.wrong {
-    background-color: #f44336;
-    background-image: url("melon_wrong.png");
+.cell.rotten {
+    background-image: url("melon_rotten.png");
 }
 
 button {
